@@ -6,7 +6,7 @@ const {
 LeagueList = React.createClass({
 
   renderLeague(league) {
-    return <LeagueItem leagueInfo={league} key={league._id} />;
+    return <LeagueItem currentUser={this.props.currentUser} leagueInfo={league} key={league._id} />;
   },
   render() {
     return (

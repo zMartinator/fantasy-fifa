@@ -9,24 +9,35 @@ const {
 LeagueItem = React.createClass({
 
   handleJoinLeague() {
-    console.log("attempting to join league");
+    Meteor.call("registerUserForLeague",
+                this.props.leagueInfo._id,
+                this.props.currentUser._id
+    );
   },
   render() {
-    const league = this.props.leagueInfo;
+
+    let isAlreadyInLeague = false;
+    if(this.props.currentUser) {
+      isAlreadyInLeague = _.contains(this.props.leagueInfo.usersInLeague, this.props.currentUser._id);
+    }
 
     return (
       <ListGroupItem>
         <Row>
           <Col xs={12} md={3} lg={2}>
-            <h4>{league.name}</h4>
+            <h4><a href={"/draft/" + this.props.leagueInfo.draftId}>{this.props.leagueInfo.name}</a></h4>
           </Col>
           <Col xs={12} md={3} lg={2}>
-            <p>{league.usersInLeague.length}/{league.maxSize} Spots</p>
-            <p>Divisions: {league.isDivisions ? "Yes" : "No"}</p>
-            <p>Number of games: {league.numberOfDivisionGames}</p>
+            <p>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxSize} Spots</p>
+            <p>Divisions: {this.props.leagueInfo.isDivisions ? "Yes" : "No"}</p>
+            <p>Number of games: {this.props.leagueInfo.numberOfDivisionGames}</p>
           </Col>
           <Col xs={12} md={6} lg={8}>
-            <LeagueJoinButton handleClick={this.handleJoinLeague} isLoggedIn={false} />
+            <LeagueJoinButton
+              handleClick={this.handleJoinLeague}
+              isLoggedIn={this.props.currentUser}
+              isAlreadyInLeague={isAlreadyInLeague}
+              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxSize} />
           </Col>
         </Row>
       </ListGroupItem>

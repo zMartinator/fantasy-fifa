@@ -14672,7 +14672,7 @@ function createUncontrollable(mixins, set) {
   return uncontrollable;
 
   function uncontrollable(Component, controlledValues) {
-    var forwardMethods = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+    var methods = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
     var displayName = Component.displayName || Component.name || 'Component',
         basePropTypes = utils.getType(Component).propTypes,
@@ -14680,10 +14680,11 @@ function createUncontrollable(mixins, set) {
 
     propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName);
 
-    var methods = utils.transform(forwardMethods, function (proto, method) {
-      proto[method] = function () {
-        var controlled = this.refs.controlled;
-        return controlled[method].apply(controlled, arguments);
+    methods = utils.transform(methods, function (obj, method) {
+      obj[method] = function () {
+        var _refs$inner;
+
+        return (_refs$inner = this.refs.inner)[method].apply(_refs$inner, arguments);
       };
     }, {});
 
@@ -14729,11 +14730,10 @@ function createUncontrollable(mixins, set) {
           newProps[handle] = setAndNotify.bind(_this, propName);
         });
 
-        newProps = _extends({ ref: 'controlled' }, props, newProps);
+        newProps = _extends({}, props, newProps, { ref: 'inner' });
 
         return _react2['default'].createElement(Component, newProps);
       }
-
     }));
 
     component.ControlledComponent = Component;

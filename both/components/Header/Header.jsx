@@ -8,7 +8,6 @@ Header = React.createClass({
           {/* This is the eventKey referenced */}
           <NavItem eventKey={1} href='/'>Home</NavItem>
           <NavItem eventKey={2} href='/about'>About</NavItem>
-          <NavItem eventKey={3} href='/draft'>Draft</NavItem>
         </Nav>
       </Navbar>
     );

@@ -25,7 +25,7 @@ LeagueListContainer = React.createClass({
     }
 
     return (
-      <LeagueList leagues={this.data.leagueList}/>
+      <LeagueList currentUser={this.props.currentUser} leagues={this.data.leagueList}/>
     );
   }
 });

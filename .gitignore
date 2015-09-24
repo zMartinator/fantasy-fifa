@@ -1,2 +1,3 @@
 lib/browersify/app.browserify.js.cached
 lib/browersify/app.browserify.js.map
+.DS_Store
