@@ -5,7 +5,7 @@ Reaktor.init(
   <Router>
     <Route path="/" content={Home} layout={MainLayout} />
     <Route path="/about" content={About} layout={MainLayout} />
-    <Route path="/draft/:draftId" content={Draft} layout={MainLayout} />
+  <Route path="/draft/:leagueId" content={Draft} layout={MainLayout} />
   </Router>
 );
 

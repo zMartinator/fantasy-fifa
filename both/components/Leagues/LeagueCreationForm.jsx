@@ -3,36 +3,46 @@ LeagueCreationForm = React.createClass({
     e.preventDefault();
 
     let formLeagueName = React.findDOMNode(this.refs.leagueName).value.trim();
-    let formLeagueIsDivisions = React.findDOMNode(this.refs.leagueIsDivisions).checked;
-    let formLeagueSize = React.findDOMNode(this.refs.leagueSize).value;
-    let formLeagueNumberOfDivisionGames = React.findDOMNode(this.refs.leagueDivisionGames).value;
-    let formLeagueNumberOfDivisions = React.findDOMNode(this.refs.leagueNumberOfDivisions).value;
+    let formLeagueUserSize = React.findDOMNode(this.refs.leagueUserSize).value;
+    let formMaxTeamSize = React.findDOMNode(this.refs.maxTeamSize).value;
+    let formAuctionStartingMoney = React.findDOMNode(this.refs.auctionStartingMoney).value;
+    let formTimeBetweenNomination = React.findDOMNode(this.refs.timeBetweenNomination).value;
+    let formBidTime = React.findDOMNode(this.refs.bidTime).value;
+    //let formLeagueIsDivisions = React.findDOMNode(this.refs.leagueIsDivisions).checked;
 
     try {
-      formLeagueSize = parseInt( formLeagueSize );
-      formLeagueNumberOfDivisionGames = parseInt( formLeagueNumberOfDivisionGames );
-      formLeagueNumberOfDivisions = parseInt( formLeagueNumberOfDivisions );
+      formLeagueUserSize = parseInt( formLeagueUserSize );
+      formMaxTeamSize = parseInt( formMaxTeamSize );
+      formAuctionStartingMoney = parseInt( formAuctionStartingMoney );
+      formTimeBetweenNomination = parseInt( formTimeBetweenNomination );
+      formBidTime = parseInt( formBidTime );
     } catch(e) {
       throw new Meteor.Error("NaN", "Not a Number");
     }
 
     if (!formLeagueName ||
-        !formLeagueIsDivisions ||
-        !formLeagueSize ||
-        !formLeagueNumberOfDivisionGames ||
-        !formLeagueNumberOfDivisions) {
+        !formLeagueUserSize ||
+        !formMaxTeamSize ||
+        !formAuctionStartingMoney ||
+        !formTimeBetweenNomination ||
+        !formBidTime) {
       return;
     }
 
     // Save to Server
-    Meteor.call("CreateLeague", formLeagueName, formLeagueIsDivisions, formLeagueSize, formLeagueNumberOfDivisionGames, formLeagueNumberOfDivisions);
+    Meteor.call("CreateLeague", formLeagueName, formLeagueUserSize, formMaxTeamSize, formAuctionStartingMoney, formTimeBetweenNomination, formBidTime);
 
     // RESET FORM
     React.findDOMNode(this.refs.leagueName).value = "";
-    React.findDOMNode(this.refs.leagueIsDivisions).checked = true;
-    React.findDOMNode(this.refs.leagueSize).value = 4;
-    React.findDOMNode(this.refs.leagueDivisionGames).value = 1;
-    React.findDOMNode(this.refs.leagueNumberOfDivisions).value = 2;
+    React.findDOMNode(this.refs.leagueUserSize).value = 4;
+    //React.findDOMNode(this.refs.leagueIsDivisions).checked = true;
+    /*
+    <div className="checkbox">
+      <label>
+        <input type="checkbox" defaultChecked="true" ref="leagueIsDivisions"/> Divisions
+      </label>
+    </div>
+    */
 
     if(this.props.doneCallback) {
       this.props.doneCallback();
@@ -47,24 +57,25 @@ LeagueCreationForm = React.createClass({
           <label htmlFor="leagueName">League name</label>
           <input type="text" id="leagueName" ref="leagueName" className="form-control" placeholder="e.g., Romeo Rumble" maxLength="30"/>
         </div>
-        <div className="checkbox">
-          <label>
-            <input type="checkbox" defaultChecked="true" ref="leagueIsDivisions"/> Divisions
-          </label>
+        <div className="form-group">
+          <label htmlFor="leagueUserSize">Max League Size</label>
+          <input type="number" min="2" max="128" step="1" defaultValue="4" className="form-control" id="leagueUserSize" ref="leagueUserSize" />
         </div>
         <div className="form-group">
-          <label htmlFor="leagueSize">Size of League</label>
-          <input type="number" min="4" max="128" step="1" defaultValue="4" className="form-control" id="leagueSize" ref="leagueSize" />
+          <label htmlFor="maxTeamSize">Max Team Size</label>
+          <input type="number" min="1" max="100" step="1" defaultValue="18" className="form-control" id="maxTeamSize" ref="maxTeamSize" />
         </div>
         <div className="form-group">
-          <label htmlFor="leagueDivisionGames">Number of Division Games</label>
-          <input type="number" min="1" max="10" step="1" defaultValue="1" className="form-control" id="leagueDivisionGames" ref="leagueDivisionGames" />
-          <p className="help-block">Ignore if not doing divisions</p>
+          <label htmlFor="auctionStartingMoney">Starting Auction Money</label>
+          <input type="number" min="1" step="1" defaultValue="100" className="form-control" id="auctionStartingMoney" ref="auctionStartingMoney" />
         </div>
         <div className="form-group">
-          <label htmlFor="leagueNumberOfDivisions">Number of divisions</label>
-          <input type="number" min="2" max="8" step="1" defaultValue="2" className="form-control" id="leagueNumberOfDivisions" ref="leagueNumberOfDivisions" />
-          <p className="help-block">Ignore if not doing divisions</p>
+          <label htmlFor="timeBetweenNomination">Time Between Nomination</label>
+          <input type="number" min="5" step="1" defaultValue="15" className="form-control" id="timeBetweenNomination" ref="timeBetweenNomination" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="bidTime">Bid Time</label>
+          <input type="number" min="5" step="1" defaultValue="10" className="form-control" id="bidTime" ref="bidTime" />
         </div>
 
         <button type="submit" className="btn btn-primary">Submit</button>

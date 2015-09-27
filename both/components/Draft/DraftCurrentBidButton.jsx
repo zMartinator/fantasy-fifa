@@ -4,18 +4,13 @@ const {
 
 DraftCurrentBidButton = React.createClass({
 
-  // TestCase: currently have 10 ppl, maxSize is 15, need 5 more. bidding on 11th player. currently have $50. must have $4 leftover
   maxBid(moneyLeft, currentAmountOfPlayers, maxTeamSize) {
     return moneyLeft - (maxTeamSize - currentAmountOfPlayers - 1);
   },
 
   render() {
-    var currentBid = this.props.currentDraft.currentBids.length > 0 ? this.props.currentDraft.currentBids[this.props.currentDraft.currentBids.length - 1].value : 1;
-    var currentPlayerUpForBid = this.props.currentDraft.currentPlayerUpForBidId !== -1 ? this.props.currentDraft.currentPlayerUpForBidId : "Waiting";
-    var currentUser = this.props.currentUser; // TODO: refactor this shortcut
-    var currentDraft = this.props.currentDraft; // TODO: refactor this shortcut
 
-    if(!currentUser) {
+    if(!this.props.currentUser) {
       return (
         <Button bsSize="medium" bsStyle="warning" block disabled >
           You Must Log In First
@@ -23,7 +18,7 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    if( !_.contains(this.props.currentLeague.usersInLeague, currentUser._id) ) {
+    if( !_.contains(this.props.currentLeague.usersInLeague, this.props.currentUser._id) ) {
       return (
         <Button bsSize="medium" bsStyle="warning" block disabled >
           You are not in this draft!
@@ -31,7 +26,7 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    if(currentDraft.isDone == null) {
+    if(this.props.currentLeague.isDraftDone === null) {
       return (
         <Button bsSize="medium" bsStyle="success" block disabled >
           Awaiting Draft to Start
@@ -39,7 +34,7 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    if(currentDraft.isDone == null) {
+    if(this.props.currentLeague.isDraftDone === true) {
       return (
         <Button bsSize="medium" bsStyle="success" block disabled >
           Draft Over
@@ -47,7 +42,7 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    if(currentBid.userId == currentUser._id) {
+    if(this.props.currentBid.userId === this.props.currentUser._id) {
       return (
         <Button bsSize="medium" bsStyle="success" block disabled >
           You are highest bidder
@@ -55,7 +50,15 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    if( currentBid.value > this.maxBid(currentUser.MoneyLeft, currentUser.profile.team.players.length, currentDraft) ) {
+    if(this.props.currentUser.profile.team.players.length === this.props.currentLeague.maxTeamSize) {
+      return (
+        <Button bsSize="medium" bsStyle="success" block disabled >
+          Your Team is Full
+        </Button>
+      );
+    }
+
+    if( this.props.currentBid.value >= this.maxBid(this.props.currentUser.profile.draftMoney, this.props.currentUser.profile.team.players.length, this.props.currentLeague.maxTeamSize) ) {
       return (
         <Button bsSize="medium" bsStyle="primary" block  disabled >
           Above your max bid
@@ -63,10 +66,14 @@ DraftCurrentBidButton = React.createClass({
       );
     }
 
-    return (
-      <Button bsSize="medium" bsStyle="primary" block onClick={this.props.handleBidCallback}>
-        {currentBid}
-      </Button>
-    );
+    if(this.props.currentLeague.currentPlayerUpForBidId !== "") {
+      return (
+        <Button bsSize="medium" bsStyle="primary" block onClick={this.props.handleBidCallback}>
+          Bid {this.props.currentBid.value + 1}
+        </Button>
+      );
+    }
+
+    return null;
   }
 });

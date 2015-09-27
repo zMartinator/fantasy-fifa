@@ -7,7 +7,7 @@ const {
 DraftStartButton = React.createClass({
 
   startDraft() {
-    console.log("Trying to start draft");
+    Meteor.call("startDraft", this.props.currentLeague._id);
   },
   render() {
     // If a user is not logged in they cannot see the Start Draft button.
@@ -15,8 +15,8 @@ DraftStartButton = React.createClass({
       return null;
     }
 
-    // If the current Draft===null as in Not started, and the current logged in user is the leagueCreator let them see the button.
-    if( (this.props.currentDraft.isDone === null) && (this.props.currentUser._id === this.props.currentLeague.leagueCreator) ) {
+    // If the current isDraftDone===null as in Not started, and the current logged in user is the leagueCreator let them see the button.
+    if( (this.props.currentLeague.isDraftDone === null) && (this.props.currentUser._id === this.props.currentLeague.leagueCreator) ) {
       return (
         <Row>
           <Col xs={12} md={12} lg={12}>

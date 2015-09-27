@@ -1,3 +1,5 @@
 Meteor.startup(function () {
-  //console.log("Meteor.startup in client");
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_AND_EMAIL"
+  });
 });

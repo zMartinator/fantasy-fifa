@@ -12,9 +12,9 @@ DraftStatusBanner = React.createClass({
     } else if (this.props.isDone === null) {
       statusMessage = "Awaiting league creator to start";
     } else if(this.props.isDone) {
-      return null;
+      statusMessage = "Draft Done! We did it!";
     } else {
-      console.log("weird condition? draft.isDone !== null/true/false");
+      console.log("weird condition? league.isDone !== null/true/false");
       console.log(this.props.isDone);
       return null;
     }

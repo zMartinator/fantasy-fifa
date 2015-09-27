@@ -25,12 +25,10 @@ LeagueItem = React.createClass({
       <ListGroupItem>
         <Row>
           <Col xs={12} md={3} lg={2}>
-            <h4><a href={"/draft/" + this.props.leagueInfo.draftId}>{this.props.leagueInfo.name}</a></h4>
+            <h4><a href={"/draft/" + this.props.leagueInfo._id}> {this.props.leagueInfo.name} </a></h4>
           </Col>
           <Col xs={12} md={3} lg={2}>
-            <p>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxSize} Spots</p>
-            <p>Divisions: {this.props.leagueInfo.isDivisions ? "Yes" : "No"}</p>
-            <p>Number of games: {this.props.leagueInfo.numberOfDivisionGames}</p>
+            <p>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxLeagueSize} Spots</p>
           </Col>
           <Col xs={12} md={6} lg={8}>
             <LeagueJoinButton

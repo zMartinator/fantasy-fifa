@@ -1,8 +1,7 @@
 const {
   Grid,
   Row,
-  Col,
-  Button
+  Col
 } = bootstrap;
 
 Draft = React.createClass({
@@ -11,24 +10,32 @@ Draft = React.createClass({
 
   getMeteorData() {
 
-    let handle = Meteor.subscribe("draftAndLeagueByDraftId", this.props.params.draftId);
+    let handle = Meteor.subscribe("league", this.props.params.leagueId);
+    let usersHandle = Meteor.subscribe("usersInLeague", this.props.params.leagueId);
 
     return {
-      draftLoading: !handle.ready(),
-      currentDraft: Drafts.findOne(this.props.params.draftId),
+      subsLoading: !handle.ready(),
       currentUser: Meteor.user(),
       currentLeague: Leagues.findOne(),
-      currentPlayer: null
+      currentLeagueUsers: Meteor.users.find().fetch()
     };
   },
 
 
   handleBid() {
-    console.log("Trying Handle Bid!");
+    Meteor.call("bidOnPlayer", this.data.currentLeague._id, this.data.currentLeague.currentBids[this.data.currentLeague.currentBids.length - 1].value + 1, Meteor.userId() );
   },
   render() {
+    /*
+    <Col xs={12} md={8} lg={8}>
+      <DraftCurrentPlayer
+        currentUser={this.data.currentUser}
+        currentLeague={this.data.currentLeague}
+      />
+    </Col>
+    */
 
-    if(this.data.draftLoading) {
+    if(this.data.subsLoading) {
       return (
         <Grid fluid={true}>
           <Row>
@@ -43,33 +50,28 @@ Draft = React.createClass({
     }
     return (
       <Grid fluid={true}>
-        <DraftStatusBanner isDone={this.data.currentDraft.isDone}/>
+        <DraftStatusBanner isDone={this.data.currentLeague.isDraftDone} />
         <DraftStartButton
           currentUser={this.data.currentUser}
-          currentDraft={this.data.currentDraft}
           currentLeague={this.data.currentLeague}
         />
         <Row>
-          <Col xs={12} md={4} lg={4}>
+          <Col xs={12} md={12} lg={12}>
             <DraftCurrentBid
               handleBidCallback={this.handleBid}
               currentUser={this.data.currentUser}
-              currentDraft={this.data.currentDraft}
               currentLeague={this.data.currentLeague}
-            />
-          </Col>
-          <Col xs={12} md={8} lg={8}>
-            <DraftCurrentPlayer
-              currentUser={this.data.currentUser}
-              currentDraft={this.data.currentDraft}
-              currentLeague={this.data.currentLeague}
-              currentPlayer={this.data.currentPlayer}
             />
           </Col>
           <Col xs={12} md={12} lg={12}>
             <DraftPlayerPicker
               currentUser={this.data.currentUser}
-              currentDraft={this.data.currentDraft}
+              currentLeague={this.data.currentLeague}
+            />
+          </Col>
+          <Col xs={12} md={12} lg={12}>
+            <DraftBoard
+              currentLeagueUsers={this.data.currentLeagueUsers}
               currentLeague={this.data.currentLeague}
             />
           </Col>

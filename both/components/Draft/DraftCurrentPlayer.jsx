@@ -5,15 +5,18 @@ const {
 
 DraftCurrentPlayer = React.createClass({
   render() {
-    return (
-      <Row>
-        <Col xs={12} md={12} lg={12}>
-          <h3 className="text-center">
-            {/*this.props.currentPlayer.name*/}
-            PLAYERNAME | Soon to come playerData
-          </h3>
-        </Col>
-      </Row>
-    );
+    if(this.props.currentLeague.currentPlayerUpForBidId) {
+      return (
+        <Row>
+          <Col xs={12} md={12} lg={12}>
+            <h3 className="text-center">
+              {this.props.currentUser.profile.draftMoney}
+            </h3>
+          </Col>
+        </Row>
+      );
+    }
+
+    return null;
   }
 });

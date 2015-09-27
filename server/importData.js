@@ -1,13 +1,13 @@
-/*Meteor.methods({
+// Moved to fixtures to avoid race condition.
+/*
+Meteor.methods({
   "importData": function() {
     this.unblock();
-    var jsonParamObject = {"page":1,"quality":"bronze,silver,gold,rare_bronze,rare_silver,rare_gold","ovr":"70:99","position":"LF,CF,RF,ST,LW,LM,CAM,CDM,CM,RM,RW,LWB,LB,CB,RB,RWB"};
-    var urlString = "https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=";
-    var sum = 0;
+    var jsonParamObject = {"page":1,"quality":"bronze,silver,gold","ovr":"70:99","position":"LF,CF,RF,ST,LW,LM,CAM,CDM,CM,RM,RW,LWB,LB,CB,RB,RWB"};
     try {
-      for(var i = 1; i < 167 + 1; i++) {
+      for(var i = 1; i < 77; i++) {
           jsonParamObject["page"] = i;
-          var result = JSON.parse(HTTP.call("GET", urlString + JSON.stringify(jsonParamObject) ).content);
+          var result = JSON.parse(HTTP.call("GET", "https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=" + JSON.stringify(jsonParamObject) ).contents);
           var playerToInsert = {};
           result.items.forEach(function(playerItem) {
             playerToInsert.acceleration=playerItem.acceleration;
@@ -68,61 +68,70 @@
 
             Players.insert(playerToInsert);
           });
-          console.log(i + "     " + result.items.length);
       }
       return true;
     } catch (e) {
       console.log(e);
+      return false;
     }
   }
 });
+*/
 
-if (Meteor.users.find().count() === 0) {
-    var userId = Accounts.createUser({
-      username: "walt",
-      email: "walt@walt.com",
-      password: "password"
-    });
-
-    userId2 = Accounts.createUser({
-      username: "BEN",
-      email: "ben@ben.com",
-      password: "password"
-    });
-
-    console.log("Seeded users");
-  }
-
-if(Leagues.find().count() === 0) {
-  Leagues.insert({
-    usersInLeague: [userId, userId2],
-    leagueCreator: userId,
-
-    name: "Romeo Rumble",
-    maxLeagueSize: 2,
-    maxTeamSize: 3,
-    auctionStartingMoney: 100,
-    startTimeBetweenNomination: 10,
-    startBidTime: 10,
-
-    isDraftDone: null,
-    userTurnOrder: [],
-    currentUserTurnIndex: 0,
-    currentBidClock: -1,
-    currentNominationClock: -1,
-    currentPlayerUpForBidId: "",
-    currentBids:[],
-
-    didNominateOnTime: false
-  });
-
-  console.log("Seeded leagues");
-}
-
-if (Players.find().count() === 0) {
-  //Meteor.call("importData");
-
-  //console.log("Seeded players");
-}
-
+/*
+acceleration
+age
+aggression
+agility
+atkWorkRate
+attributes
+balance
+ballcontrol
+baseId
+commonName
+crossing
+curve
+defWorkRate
+dribbling
+finishing
+firstName
+fitness
+foot
+freekickaccuracy
+gkdiving
+gkhandling
+gkkicking
+gkpositioning
+gkreflexes
+headingaccuracy
+headshotImgUrl
+height
+interceptions
+isGK
+jumping
+lastName
+longpassing
+longshots
+marking
+name
+penalties
+position
+positioning
+rating
+reactions
+shortpassing
+shotpower
+skillMoves
+slidingtackle
+specialImages
+specialities
+sprintspeed
+stamina
+standingtackle
+strength
+traits
+vision
+volleys
+weakFoot
+weight
 */

@@ -6,7 +6,7 @@ Accounts.onCreateUser(function(options, user) {
     teamName: "defaultTeamName",
     players: []
   };
-  options.profile.draftMoney = -1;
+  options.profile.draftMoney = 100; // TODO: hardcoded to 100
 
 
   /*

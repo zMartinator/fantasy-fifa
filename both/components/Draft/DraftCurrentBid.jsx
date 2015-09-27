@@ -1,26 +1,27 @@
 const {
-  Grid,
   Row,
-  Col,
-  Button
+  Col
 } = bootstrap;
 
 DraftCurrentBid = React.createClass({
   render() {
-    var currentBid = this.props.currentDraft.currentBids.length > 0 ? this.props.currentDraft.currentBids[this.props.currentDraft.currentBids.length - 1].value : -1;
-    var currentPlayerUpForBid = this.props.currentDraft.currentPlayerUpForBidId !== -1 ? this.props.currentDraft.currentPlayerUpForBidId : "Waiting For Nomination";
+    var currentBid = this.props.currentLeague.currentBids.length > 0 ? this.props.currentLeague.currentBids[this.props.currentLeague.currentBids.length - 1] : -1;
+    var currentPlayerUpForBid = this.props.currentLeague.currentPlayerUpForBidId !== -1 ? this.props.currentLeague.currentPlayerUpForBidId : "Waiting For Nomination";
 
     return (
       <Row>
         <Col xs={12} md={12} lg={12}>
-          <h4 className="text-center">{currentPlayerUpForBid}</h4>
+          <h2 className="text-center">{this.props.currentLeague.currentNominationClock === 0 ? this.props.currentLeague.currentBidClock : this.props.currentLeague.currentNominationClock }</h2>
+        </Col>
+        <Col xs={12} md={12} lg={12}>
+          <h4 className="text-center"><strong>{currentPlayerUpForBid}</strong> for {currentBid.value}</h4>
         </Col>
         <Col xs={12} md={12} lg={12}>
           <div className="text-center">
             <DraftCurrentBidButton
-              currentDraft={this.props.currentDraft}
               currentUser={this.props.currentUser}
               currentLeague={this.props.currentLeague}
+              currentBid={currentBid}
               handleBidCallback={this.props.handleBidCallback}
             />
           </div>
