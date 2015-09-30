@@ -1,4 +1,5 @@
-/*Meteor.methods({
+/*
+Meteor.methods({
   "importData": function() {
     this.unblock();
     var jsonParamObject = {"page":1,"quality":"bronze,silver,gold,rare_bronze,rare_silver,rare_gold","ovr":"70:99","position":"LF,CF,RF,ST,LW,LM,CAM,CDM,CM,RM,RW,LWB,LB,CB,RB,RWB"};
@@ -76,10 +77,11 @@
     }
   }
 });
+*/
 
 if (Meteor.users.find().count() === 0) {
     var userId = Accounts.createUser({
-      username: "walt",
+      username: "WALT",
       email: "walt@walt.com",
       password: "password"
     });
@@ -108,8 +110,8 @@ if(Leagues.find().count() === 0) {
     isDraftDone: null,
     userTurnOrder: [],
     currentUserTurnIndex: 0,
-    currentBidClock: -1,
-    currentNominationClock: -1,
+    currentBidClock: 0,
+    currentNominationClock: 0,
     currentPlayerUpForBidId: "",
     currentBids:[],
 
@@ -119,10 +121,10 @@ if(Leagues.find().count() === 0) {
   console.log("Seeded leagues");
 }
 
+
+
 if (Players.find().count() === 0) {
   //Meteor.call("importData");
 
   //console.log("Seeded players");
 }
-
-*/

@@ -14,7 +14,7 @@ DraftCurrentBid = React.createClass({
           <h2 className="text-center">{this.props.currentLeague.currentNominationClock === 0 ? this.props.currentLeague.currentBidClock : this.props.currentLeague.currentNominationClock }</h2>
         </Col>
         <Col xs={12} md={12} lg={12}>
-          <h4 className="text-center"><strong>{currentPlayerUpForBid}</strong> for {currentBid.value}</h4>
+          <h4 className="text-center"><strong>{currentPlayerUpForBid}</strong> for <strong>{currentBid.value}</strong> by <strong>{currentBid.username}</strong></h4>
         </Col>
         <Col xs={12} md={12} lg={12}>
           <div className="text-center">
