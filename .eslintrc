@@ -1,33 +1,27 @@
 {
-  "rules": {
-    "indent": 0,
-    "quotes": [
-      2,
-      "double"
-    ],
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
-    "semi": [
-      2,
-      "always"
-    ],
-    "no-undef": 0,
-    "no-console": 0,
-    "no-unused-vars": 0
+  "ecmaFeatures": {
+    "experimentalObjectRestSpread": true,
+    "modules": true,
+    "jsx": true
   },
   "env": {
-    "es6": true,
-    "node": true,
     "browser": true,
+    "es6": true,
     "meteor": true,
     "mongo": true,
-    "commonjs": true
   },
   "extends": "eslint:recommended",
-  "ecmaFeatures": {
-    "jsx": true,
-    "experimentalObjectRestSpread": true
+  "globals": {
+    "Astro": false,
+    "BlazeToReact": false,
+    "ReactMeteorData": false
+  },
+  "rules": {
+    "indent": 0,
+    "linebreak-style": [ 2, "unix" ],
+    "semi": [ 2, "always" ],
+    "no-undef": 2,
+    "no-console": 0,
+    "no-unused-vars": 0
   }
 }
