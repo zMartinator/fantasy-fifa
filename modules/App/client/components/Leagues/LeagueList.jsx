@@ -1,8 +1,8 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { LeagueItem } from './LeagueItem';
 
-const LeagueList = React.createClass({
+const LeagueList = createClass({
   render() {
     return (
       <ListGroup>

@@ -1,6 +1,6 @@
 import { React } from 'react';
 import { Well } from 'react-bootstrap';
-import { Leagues } from '/App/collections/leagues';
+import { Leagues } from 'App/collections/leagues';
 
 const DraftPlayerPicker = React.createClass({
   handleSubmit: function(e) {

@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-const Header = React.createClass({
+const Header = createClass({
   render() {
     return (
       <Navbar brand='FIFA Fantasy' fluid={true} inverse toggleNavKey={0}>

@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
-const DraftBoardUserItem = React.createClass({
+const DraftBoardUserItem = createClass({
   render() {
     return (
       <ListGroup>

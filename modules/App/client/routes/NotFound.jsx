@@ -1,6 +1,6 @@
-import { React } from 'react';
+import { createClass } from 'react';
 
-const NotFound = React.createClass({
+const NotFound = createClass({
   render() {
     return (
       <div className='NotFound'>

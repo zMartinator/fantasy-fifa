@@ -1,7 +1,7 @@
-import { React } from 'react';
-import { Players } from '/App/collections/players';
+import { createClass } from 'react';
+import { Players } from 'App/collections/players';
 
-const About = React.createClass({
+const About = createClass({
   mixins: [ReactMeteorData],
 
   getMeteorData() {

@@ -1,8 +1,8 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { DraftCurrentBidButton } from './DraftCurrentBidButton';
 
-const DraftCurrentBid = React.createClass({
+const DraftCurrentBid = createClass({
   render() {
     var currentBid = this.props.currentLeague.currentBids.length > 0 ? this.props.currentLeague.currentBids[this.props.currentLeague.currentBids.length - 1] : -1;
     var currentPlayerUpForBid = this.props.currentLeague.currentPlayerUpForBidId !== -1 ? this.props.currentLeague.currentPlayerUpForBidId : "Waiting For Nomination";

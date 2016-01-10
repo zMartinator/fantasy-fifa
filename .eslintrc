@@ -9,6 +9,7 @@
     "es6": true,
     "meteor": true,
     "mongo": true,
+    "node": true
   },
   "extends": "eslint:recommended",
   "globals": {

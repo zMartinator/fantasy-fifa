@@ -1,8 +1,8 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { LeagueCreationForm } from './LeagueCreationForm';
+import LeagueCreationForm from './LeagueCreationForm';
 
-const LeagueCreationButton = React.createClass({
+const LeagueCreationButton = createClass({
   getInitialState() {
     return { showModal: false };
   },

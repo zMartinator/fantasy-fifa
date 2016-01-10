@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-const DraftCurrentPlayer = React.createClass({
+const DraftCurrentPlayer = createClass({
   render() {
     if(this.props.currentLeague.currentPlayerUpForBidId) {
       return (

@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
-import { render } from 'react-dom';
-import { Router, Route, Link, browserHistory } from 'react-router';
-import { Grid, Header, Row, Col, Footer } from 'react-bootstrap';
+import { Component } from 'react';
+import { Grid, Row, Col } from 'react-bootstrap';
+import Header from 'App/client/components/Header/Header';
+import Footer from 'App/client/components/Footer/Footer';
 
 const LoginButtons = BlazeToReact('loginButtons');
 
-export default class App extends Component {
+class App extends Component {
   render() {
     return (
       <Grid>
@@ -26,3 +26,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default App;

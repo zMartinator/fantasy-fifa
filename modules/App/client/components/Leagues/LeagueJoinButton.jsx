@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Button } from 'react-bootstrap';
 
-const LeagueJoinButton = React.createClass({
+const LeagueJoinButton = createClass({
   render() {
     if(this.props.isAlreadyInLeague) {
       return (

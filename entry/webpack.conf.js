@@ -9,7 +9,7 @@ module.exports = {
     reload: true
   },
   resolve: {
-    root: path.join(__dirname, '..', 'modules'), // TODO: CHANGE ME
+    root: path.join(__dirname, '..', 'modules'),
     extensions: ['', '.js', '.jsx', '.json', '.css']
   }
 };

@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Button } from 'react-bootstrap';
 
-const DraftCurrentBidButton = React.createClass({
+const DraftCurrentBidButton = createClass({
 
   maxBid(moneyLeft, currentAmountOfPlayers, maxTeamSize) {
     return moneyLeft - (maxTeamSize - currentAmountOfPlayers - 1);

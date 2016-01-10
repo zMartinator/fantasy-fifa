@@ -1,5 +1,5 @@
-import { Players } from '/App/collections/players';
-import { Leagues } from '/App/collections/leagues';
+import { Players } from 'App/collections/players';
+import { Leagues } from 'App/collections/leagues';
 
 Meteor.publish("leagues", function() {
   return Leagues.find();

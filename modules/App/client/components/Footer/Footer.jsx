@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Grid, Col, Row } from 'react-bootstrap';
 
-const Footer = React.createClass({
+const Footer = createClass({
   render() {
     return (
       <Grid>

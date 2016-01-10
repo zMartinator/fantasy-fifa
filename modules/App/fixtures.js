@@ -1,4 +1,4 @@
-import { Leagues } from '/App/collections/leagues';
+import { Leagues } from 'App/collections/leagues';
 /*
 Meteor.methods({
   "importData": function() {

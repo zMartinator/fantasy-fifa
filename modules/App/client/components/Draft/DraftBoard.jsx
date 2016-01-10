@@ -1,8 +1,8 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { DraftBoardUserItem } from './DraftBoardUserItem';
 
-const DraftBoard = React.createClass({
+const DraftBoard = createClass({
   render() {
     return (
       <Row>

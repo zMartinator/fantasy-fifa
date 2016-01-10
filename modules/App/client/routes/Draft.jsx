@@ -1,8 +1,8 @@
-import { React } from 'react';
-import { Leagues } from '/App/collections/leagues';
+import { createClass } from 'react';
+import { Leagues } from 'App/collections/leagues';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-const Draft = React.createClass({
+const Draft = createClass({
 
   mixins: [ReactMeteorData],
 

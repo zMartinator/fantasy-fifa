@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
 
-const DraftStartButton = React.createClass({
+const DraftStartButton = createClass({
 
   startDraft() {
     Meteor.call("startDraft", this.props.currentLeague._id);

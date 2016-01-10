@@ -1,2 +1,3 @@
-import 'TodoApp/todo-methods';
-import 'TodoApp/server/todo-publications';
+import 'App/methods';
+import 'App/server/accounts';
+import 'App/server/publish';

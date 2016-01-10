@@ -1,7 +1,7 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Row, Col} from 'react-bootstrap';
 
-const DraftStatusBanner = React.createClass({
+const DraftStatusBanner = createClass({
 
   getMessage(isDone) {
     if(this.props.isDone === null) return "Draft underway!";

@@ -1,8 +1,9 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import { Leagues } from '/App/collections/leagues';
+import { Leagues } from 'App/collections/leagues';
+import LeagueList from 'App/client/components/Leagues/LeagueList';
 
-const LeagueListContainer = React.createClass({
+const LeagueListContainer = createClass({
   mixins: [ReactMeteorData],
   getMeteorData() {
     let handle = Meteor.subscribe("leagues");

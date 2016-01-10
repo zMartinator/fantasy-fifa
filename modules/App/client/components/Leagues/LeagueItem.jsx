@@ -1,8 +1,8 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { ListGroupItem, Row, Col, Button } from 'react-bootstrap';
-import { LeagueJoinButton } from './LeagueJoinButton';
+import LeagueJoinButton from './LeagueJoinButton';
 
-const LeagueItem = React.createClass({
+const LeagueItem = createClass({
 
   handleJoinLeague() {
     Meteor.call("registerUserForLeague",

@@ -32,5 +32,4 @@ webpack:webpack
 
 react-runtime
 react-meteor-data
-reactrouter:react-router-ssr
 thereactivestack:blazetoreact

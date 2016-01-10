@@ -1,6 +1,6 @@
-import { React } from 'react';
+import { createClass } from 'react';
 
-const UserObject = React.createClass({
+const UserObject = createClass({
   render() {
     if(this.props.user) {
       return (

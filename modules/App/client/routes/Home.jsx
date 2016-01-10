@@ -1,7 +1,9 @@
-import { React } from 'react';
+import { createClass } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
+import LeagueListContainer from 'App/client/components/Leagues/LeagueListContainer';
+import LeagueCreationButton from 'App/client/components/Leagues/LeagueCreationButton';
 
-const Home = React.createClass({
+const Home = createClass({
   mixins: [ReactMeteorData],
 
   getMeteorData() {
