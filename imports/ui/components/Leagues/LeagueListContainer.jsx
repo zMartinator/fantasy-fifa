@@ -1,20 +1,13 @@
+import { Meteor } from 'meteor/meteor';
 import React, { createClass } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { createContainer } from 'meteor/react-meteor-data';
 import { Leagues } from '../../../api/collections';
 import LeagueList from './LeagueList';
 
 const LeagueListContainer = createClass({
-  mixins: [ReactMeteorData],
-  getMeteorData() {
-    let handle = Meteor.subscribe("leagues");
-
-    return {
-      leagueListLoading: !handle.ready(),
-      leagueList: Leagues.find().fetch()
-    };
-  },
   render() {
-    if(this.data.leagueListLoading) {
+    if(this.props.leagueListLoading) {
       return (
         <ListGroup>
           <ListGroupItem>
@@ -25,9 +18,16 @@ const LeagueListContainer = createClass({
     }
 
     return (
-      <LeagueList currentUser={this.props.currentUser} leagues={this.data.leagueList}/>
+      <LeagueList currentUser={this.props.currentUser} leagues={this.props.leagueList}/>
     );
   }
 });
 
-export default LeagueListContainer;
+export default createContainer( () => {
+  let handle = Meteor.subscribe("leagues");
+
+  return {
+    leagueListLoading: !handle.ready(),
+    leagueList: Leagues.find().fetch()
+  };
+}, LeagueListContainer);

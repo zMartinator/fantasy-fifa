@@ -1,39 +1,33 @@
+import { Meteor } from 'meteor/meteor';
 import React, { createClass } from 'react';
-import { Leagues } from '../../api/collections';
 import { Grid, Row, Col } from 'react-bootstrap';
+import { createContainer } from 'meteor/react-meteor-data';
+import { Leagues } from '../../api/collections';
+import DraftStatusBanner from '../components/Draft/DraftStatusBanner';
+import DraftStartButton from '../components/Draft/DraftStartButton';
+import DraftCurrentBid from '../components/Draft/DraftCurrentBid';
+import DraftBoard from '../components/Draft/DraftBoard';
+import DraftCurrentPlayer from '../components/Draft/DraftCurrentPlayer';
+import DraftPlayerPicker from '../components/Draft/DraftPlayerPicker';
 
 const Draft = createClass({
-
-  mixins: [ReactMeteorData],
-
-  getMeteorData() {
-
-    let handle = Meteor.subscribe("league", this.props.params.leagueId);
-    let usersHandle = Meteor.subscribe("usersInLeague", this.props.params.leagueId);
-
-    return {
-      subsLoading: !handle.ready(),
-      currentUser: Meteor.user(),
-      currentLeague: Leagues.findOne(),
-      currentLeagueUsers: Meteor.users.find().fetch()
-    };
-  },
-
-
   handleBid() {
-    Meteor.call("bidOnPlayer", this.data.currentLeague._id, this.data.currentLeague.currentBids[this.data.currentLeague.currentBids.length - 1].value + 1, Meteor.userId() );
+    Meteor.call( "bidOnPlayer",
+                  this.props.currentLeague._id,
+                  this.props.currentLeague.currentBids[this.props.currentLeague.currentBids.length - 1].value + 1,
+                  Meteor.userId() );
   },
   render() {
     /*
     <Col xs={12} md={8} lg={8}>
       <DraftCurrentPlayer
-        currentUser={this.data.currentUser}
-        currentLeague={this.data.currentLeague}
+        currentUser={this.props.currentUser}
+        currentLeague={this.props.currentLeague}
       />
     </Col>
     */
 
-    if(this.data.subsLoading) {
+    if(this.props.subsLoading) {
       return (
         <Grid fluid={true}>
           <Row>
@@ -48,29 +42,29 @@ const Draft = createClass({
     }
     return (
       <Grid fluid={true}>
-        <DraftStatusBanner isDone={this.data.currentLeague.isDraftDone} />
+        <DraftStatusBanner isDone={this.props.currentLeague.isDraftDone} />
         <DraftStartButton
-          currentUser={this.data.currentUser}
-          currentLeague={this.data.currentLeague}
+          currentUser={this.props.currentUser}
+          currentLeague={this.props.currentLeague}
         />
         <Row>
           <Col xs={12} md={12} lg={12}>
             <DraftCurrentBid
               handleBidCallback={this.handleBid}
-              currentUser={this.data.currentUser}
-              currentLeague={this.data.currentLeague}
+              currentUser={this.props.currentUser}
+              currentLeague={this.props.currentLeague}
             />
           </Col>
           <Col xs={12} md={12} lg={12}>
             <DraftPlayerPicker
-              currentUser={this.data.currentUser}
-              currentLeague={this.data.currentLeague}
+              currentUser={this.props.currentUser}
+              currentLeague={this.props.currentLeague}
             />
           </Col>
           <Col xs={12} md={12} lg={12}>
             <DraftBoard
-              currentLeagueUsers={this.data.currentLeagueUsers}
-              currentLeague={this.data.currentLeague}
+              currentLeagueUsers={this.props.currentLeagueUsers}
+              currentLeague={this.props.currentLeague}
             />
           </Col>
         </Row>
@@ -79,4 +73,14 @@ const Draft = createClass({
   }
 });
 
-export default Draft;
+export default createContainer( (props) => {
+  let handle = Meteor.subscribe("league", props.params.leagueId);
+  let usersHandle = Meteor.subscribe("usersInLeague", props.params.leagueId);
+
+  return {
+    subsLoading: !handle.ready(),
+    currentUser: Meteor.user(),
+    currentLeague: Leagues.findOne(),
+    currentLeagueUsers: Meteor.users.find().fetch()
+  };
+}, Draft);

@@ -1,12 +1,13 @@
-import React, { React } from 'react';
+import { Meteor } from 'meteor/meteor';
+import React, { createClass, findDOMNode } from 'react';
 import { Well } from 'react-bootstrap';
 import { Leagues } from '../../../api/collections';
 
-const DraftPlayerPicker = React.createClass({
+const DraftPlayerPicker = createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
-    let formPlayerName = React.findDOMNode(this.refs.playerName).value.trim();
+    let formPlayerName = findDOMNode(this.refs.playerName).value.trim();
 
     if (!formPlayerName) {
       return;
@@ -16,7 +17,7 @@ const DraftPlayerPicker = React.createClass({
     Meteor.call("nominatePlayer", formPlayerName, Leagues.findOne()._id, Meteor.userId() );
 
     // RESET FORM
-    React.findDOMNode(this.refs.playerName).value = "";
+    findDOMNode(this.refs.playerName).value = "";
 
     return;
   },

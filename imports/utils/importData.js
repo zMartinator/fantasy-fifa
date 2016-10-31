@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 // Moved to fixtures to avoid race condition.
 /*
 Meteor.methods({

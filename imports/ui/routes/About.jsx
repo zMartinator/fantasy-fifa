@@ -1,20 +1,9 @@
+import { Meteor } from 'meteor/meteor';
 import React, { createClass } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
 import { Players } from '../../api/collections';
 
 const About = createClass({
-  mixins: [ReactMeteorData],
-
-  getMeteorData() {
-
-    let handle = Meteor.subscribe("players");
-
-    return {
-      draftLoading: !handle.ready(),
-      players: Players.find().fetch(),
-      currentUser: Meteor.user()
-    };
-  },
-
   render() {
     return (
       <div className='About'>
@@ -24,4 +13,12 @@ const About = createClass({
   }
 });
 
-export default About;
+export default createContainer(() => {
+  let handle = Meteor.subscribe("players");
+
+  return {
+    loading: !handle.ready(),
+    players: Players.find().fetch(),
+    currentUser: Meteor.user()
+  };
+}, About);

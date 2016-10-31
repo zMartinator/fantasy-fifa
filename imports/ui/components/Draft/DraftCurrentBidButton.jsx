@@ -11,7 +11,7 @@ const DraftCurrentBidButton = createClass({
 
     if(!this.props.currentUser) {
       return (
-        <Button bsSize="medium" bsStyle="warning" block disabled >
+        <Button bsStyle="warning" block disabled >
           You Must Log In First
         </Button>
       );
@@ -19,7 +19,7 @@ const DraftCurrentBidButton = createClass({
 
     if( !_.contains(this.props.currentLeague.usersInLeague, this.props.currentUser._id) ) {
       return (
-        <Button bsSize="medium" bsStyle="warning" block disabled >
+        <Button bsStyle="warning" block disabled >
           You are not in this draft!
         </Button>
       );
@@ -27,7 +27,7 @@ const DraftCurrentBidButton = createClass({
 
     if(this.props.currentLeague.isDraftDone === null) {
       return (
-        <Button bsSize="medium" bsStyle="success" block disabled >
+        <Button bsStyle="success" block disabled >
           Awaiting Draft to Start
         </Button>
       );
@@ -35,7 +35,7 @@ const DraftCurrentBidButton = createClass({
 
     if(this.props.currentLeague.isDraftDone === true) {
       return (
-        <Button bsSize="medium" bsStyle="success" block disabled >
+        <Button bsStyle="success" block disabled >
           Draft Over
         </Button>
       );
@@ -43,7 +43,7 @@ const DraftCurrentBidButton = createClass({
 
     if(this.props.currentBid.userId === this.props.currentUser._id) {
       return (
-        <Button bsSize="medium" bsStyle="success" block disabled >
+        <Button bsStyle="success" block disabled >
           You are highest bidder
         </Button>
       );
@@ -51,7 +51,7 @@ const DraftCurrentBidButton = createClass({
 
     if(this.props.currentUser.profile.team.players.length === this.props.currentLeague.maxTeamSize) {
       return (
-        <Button bsSize="medium" bsStyle="success" block disabled >
+        <Button bsStyle="success" block disabled >
           Your Team is Full
         </Button>
       );
@@ -59,7 +59,7 @@ const DraftCurrentBidButton = createClass({
 
     if( this.props.currentBid.value >= this.maxBid(this.props.currentUser.profile.draftMoney, this.props.currentUser.profile.team.players.length, this.props.currentLeague.maxTeamSize) ) {
       return (
-        <Button bsSize="medium" bsStyle="primary" block  disabled >
+        <Button bsStyle="primary" block  disabled >
           Above your max bid
         </Button>
       );
@@ -67,7 +67,7 @@ const DraftCurrentBidButton = createClass({
 
     if(this.props.currentLeague.currentPlayerUpForBidId !== "") {
       return (
-        <Button bsSize="medium" bsStyle="primary" block onClick={this.props.handleBidCallback}>
+        <Button bsStyle="primary" block onClick={this.props.handleBidCallback}>
           Bid {this.props.currentBid.value + 1}
         </Button>
       );

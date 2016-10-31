@@ -1,58 +1,43 @@
 import { Mongo } from 'meteor/mongo';
 import { Class } from 'meteor/jagi:astronomy';
 
-const Leagues = new Mongo.Collection("leagues");
+const Leagues = new Mongo.Collection('leagues');
 
 const Bid = Class.create({
-  name: "Bid",
+  name: 'Bid',
   fields: {
-    value: "number",
-    userId: "string",
-    username: "string"
+    value: Number,
+    userId: String,
+    username: String,
   }
 });
 
 const League = Class.create({
-  name: "League",
+  name: 'League',
   collection: Leagues,
   fields: {
-    usersInLeague: {
-      type: "array",
-      nested: "string",
-      default: function () {
-        return [];
-      }
-    },
-    leagueCreator: "string",
+    usersInLeague: [String],
+    leagueCreator: String,
 
-    name: "string",
-    maxLeagueSize: "number",
-    maxTeamSize: "number",
-    auctionStartingMoney: "number",
-    startTimeBetweenNomination: "number",
-    startBidTime: "number",
+    name: String,
+    maxLeagueSize: Number,
+    maxTeamSize: Number,
+    auctionStartingMoney: Number,
+    startTimeBetweenNomination: Number,
+    startBidTime: Number,
 
-    isDraftDone: "boolean",
-    userTurnOrder: {
-      type: "array",
-      nested: "string",
-      default: function () {
-        return [];
-      }
-    },
-    currentUserTurnIndex: "number",
-    currentBidClock: "number",
-    currentNominationClock: "number",
-    currentPlayerUpForBidId: "string",
-    currentBids: {
-      type: "array",
-      nested: "Bid",
-      default: function () {
-        return [];
-      }
-    },
-    didNominateOnTime: "boolean"
+    isDraftDone: Boolean,
+    userTurnOrder: [String],
+    currentUserTurnIndex: Number,
+    currentBidClock: Number,
+    currentNominationClock: Number,
+    currentPlayerUpForBidId: String,
+    currentBids: [Bid],
+    didNominateOnTime: Boolean,
   }
 });
 
-export { Leagues, League };
+export {
+  Leagues,
+  League,
+};

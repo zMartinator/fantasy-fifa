@@ -1,4 +1,6 @@
-import { Leagues, League } from '../collections';
+import { Meteor } from 'meteor/meteor';
+import { check, Match } from 'meteor/check';
+import { Leagues, League } from './collections';
 
 Meteor.methods({
   "registerUserForLeague": function(leagueId, userId) {

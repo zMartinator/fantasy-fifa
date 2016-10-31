@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import React, { createClass } from 'react';
 import { ListGroupItem, Row, Col, Button } from 'react-bootstrap';
 import LeagueJoinButton from './LeagueJoinButton';

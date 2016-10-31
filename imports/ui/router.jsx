@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
@@ -20,9 +21,9 @@ Meteor.startup( () => {
         <Route path="/signin" component={ Accounts.ui.LoginForm } formState={ STATES.SIGN_IN } />
         <Route path="/signup" component={ Accounts.ui.LoginForm } formState={ STATES.SIGN_UP } />
       </Route>
-      <Route path="/admin" component={ App }>
+      {/* <Route path="/admin" component={ App }>
         <IndexRoute component={ Admin } />
-      </Route>
+      </Route> */}
       <Route path="*" component={ NotFound } />
     </Router>,
     document.getElementById( 'app' )
