@@ -1,17 +1,10 @@
-import React, { createClass } from 'react';
+import React from 'react';
 
-const UserObject = createClass({
-  render() {
-    if(this.props.user) {
-      return (
-        <p>{this.props.user.username}</p>
-      );
-    } else {
-      return (
-        <p>"No one is logged in."</p>
-      );
-    }
+const UserObject = () => (
+  { this.props.user ?
+    <p>{this.props.user.username}</p> :
+    <p>No one is logged in.</p>
   }
-});
+);
 
 export default UserObject;

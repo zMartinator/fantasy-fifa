@@ -1,43 +1,60 @@
 import { Meteor } from 'meteor/meteor';
-import React, { createClass } from 'react';
-import { ListGroupItem, Row, Col, Button } from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 import LeagueJoinButton from './LeagueJoinButton';
 
-const LeagueItem = createClass({
+class LeagueItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleJoinLeague = this.handleJoinLeague.bind(this);
+  }
 
   handleJoinLeague() {
-    Meteor.call("registerUserForLeague",
-                this.props.leagueInfo._id,
-                this.props.currentUser._id
+    Meteor.call(
+      'registerUserForLeague',
+      this.props.leagueInfo._id,
+      this.props.currentUser._id
     );
-  },
-  render() {
+  }
 
-    let isAlreadyInLeague = false;
-    if(this.props.currentUser) {
-      isAlreadyInLeague = _.contains(this.props.leagueInfo.usersInLeague, this.props.currentUser._id);
-    }
+  render() {
+    const isAlreadyInLeague = this.props.currentUser ?
+      this.props.leagueInfo.usersInLeague.includes(this.props.currentUser._id) :
+      false;
 
     return (
-      <ListGroupItem>
-        <Row>
-          <Col xs={12} md={3} lg={2}>
-            <h4><a href={"/draft/" + this.props.leagueInfo._id}> {this.props.leagueInfo.name} </a></h4>
-          </Col>
-          <Col xs={12} md={3} lg={2}>
-            <p>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxLeagueSize} Spots</p>
-          </Col>
-          <Col xs={12} md={6} lg={8}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+            <h4><Link to={"/draft/" + this.props.leagueInfo._id}> {this.props.leagueInfo.name} </Link></h4>
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+            <p style={{margin: '0'}}>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxLeagueSize} Spots</p>
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}>
             <LeagueJoinButton
               handleClick={this.handleJoinLeague}
               isLoggedIn={this.props.currentUser}
               isAlreadyInLeague={isAlreadyInLeague}
-              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxSize} />
-          </Col>
-        </Row>
-      </ListGroupItem>
+              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxSize}
+            />
+          </div>
+        </div>
     );
   }
-});
+
+};
 
 export default LeagueItem;

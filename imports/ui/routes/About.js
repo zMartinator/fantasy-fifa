@@ -1,17 +1,13 @@
 import { Meteor } from 'meteor/meteor';
-import React, { createClass } from 'react';
+import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Players } from '../../api/collections';
 
-const About = createClass({
-  render() {
-    return (
-      <div className='About'>
-        <h1>About</h1>
-      </div>
-    );
-  }
-});
+const About = () => (
+  <div className='About'>
+    <h1>About</h1>
+  </div>
+);
 
 export default createContainer(() => {
   let handle = Meteor.subscribe("players");

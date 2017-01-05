@@ -1,50 +1,60 @@
-import React, { createClass } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
+import Modal from 'react-modal';
 import LeagueCreationForm from './LeagueCreationForm';
 
-const LeagueCreationButton = createClass({
-  getInitialState() {
-    return { showModal: false };
-  },
+const modalStyles = {
+  // content: {
+  //   top: '50%',
+  //   left: '50%',
+  //   right: 'auto',
+  //   bottom: 'auto',
+  //   marginRight: '-50%',
+  //   transform: 'translate(-50%, -50%)',
+  // },
+};
 
-  close() {
-    this.setState({ showModal: false });
-  },
+class LeagueCreationButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false,
+    };
 
-  open() {
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+  }
+
+  handleOpenModal() {
     this.setState({ showModal: true });
-  },
+  }
+
+  handleCloseModal() {
+    this.setState({ showModal: false });
+  }
 
   render() {
-
-    if(this.props.currentUser) {
-      return (
+    return this.props.currentUser ? (
         <div>
-
-          <Button bsStyle="primary" bsSize="large" onClick={this.open}>
+          <Button bsStyle="primary" bsSize="large" onClick={this.handleOpenModal}>
             Create League
           </Button>
 
-          <Modal show={this.state.showModal} onHide={this.close}>
-            <Modal.Header closeButton>
-              <Modal.Title>Create League</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <LeagueCreationForm currentUserId={this.props.currentUser._id} doneCallback={this.close} />
-            </Modal.Body>
+          <Modal
+            isOpen={this.state.showModal}
+            contentLabel="Leage Creation Modal"
+            style={modalStyles}
+          >
+            <h1>Create League</h1>
+            <LeagueCreationForm currentUserId={this.props.currentUser._id} doneCallback={this.handleCloseModal} />
           </Modal>
         </div>
-      );
-    }
-
-    return (
-      <Button bsStyle="default" bsSize="large" disabled >
-        Login to Create
-      </Button>
-    );
-
-
+      ) : (
+        <Button bsStyle="default" bsSize="large" disabled >
+          Login to Create
+        </Button>
+      )
   }
-});
+};
 
 export default LeagueCreationButton;
