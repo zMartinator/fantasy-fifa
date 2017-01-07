@@ -1,8 +1,14 @@
 import { Meteor } from 'meteor/meteor';
-import React, { createClass } from 'react';
+import React, { Component } from 'react';
 
-const LeagueCreationForm = createClass({
-  handleSubmit: function(e) {
+class LeagueCreationForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
     e.preventDefault();
 
     let formLeagueName = React.findDOMNode(this.refs.leagueName).value.trim();
@@ -20,7 +26,7 @@ const LeagueCreationForm = createClass({
       formTimeBetweenNomination = parseInt( formTimeBetweenNomination );
       formBidTime = parseInt( formBidTime );
     } catch(e) {
-      throw new Meteor.Error("NaN", "Not a Number");
+      throw new Meteor.Error('NaN', 'Not a Number');
     }
 
     if (!formLeagueName ||
@@ -33,28 +39,20 @@ const LeagueCreationForm = createClass({
     }
 
     // Save to Server
-    Meteor.call("CreateLeague", formLeagueName, formLeagueUserSize, formMaxTeamSize, formAuctionStartingMoney, formTimeBetweenNomination, formBidTime);
+    Meteor.call('CreateLeague', formLeagueName, formLeagueUserSize, formMaxTeamSize, formAuctionStartingMoney, formTimeBetweenNomination, formBidTime);
 
     // RESET FORM
-    React.findDOMNode(this.refs.leagueName).value = "";
+    React.findDOMNode(this.refs.leagueName).value = '';
     React.findDOMNode(this.refs.leagueUserSize).value = 4;
-    //React.findDOMNode(this.refs.leagueIsDivisions).checked = true;
-    /*
-    <div className="checkbox">
-      <label>
-        <input type="checkbox" defaultChecked="true" ref="leagueIsDivisions"/> Divisions
-      </label>
-    </div>
-    */
 
     if(this.props.doneCallback) {
       this.props.doneCallback();
     }
     return;
-  },
-  render: function() {
-    return (
+  }
 
+  render() {
+    return (
       <form className="leagueCreationForm" onSubmit={this.handleSubmit}>
         <div className="form-group">
           <label htmlFor="leagueName">League name</label>
@@ -86,6 +84,6 @@ const LeagueCreationForm = createClass({
       </form>
     );
   }
-});
+};
 
 export default LeagueCreationForm;

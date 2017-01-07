@@ -6,8 +6,7 @@ import { Leagues } from '../../api/collections';
 import DraftStatusBanner from '../components/Draft/DraftStatusBanner';
 import DraftStartButton from '../components/Draft/DraftStartButton';
 import DraftCurrentBid from '../components/Draft/DraftCurrentBid';
-import DraftBoard from '../components/Draft/DraftBoard';
-import DraftCurrentPlayer from '../components/Draft/DraftCurrentPlayer';
+import DraftBoardUserItem from '../components/Draft/DraftBoardUserItem';
 import DraftPlayerPicker from '../components/Draft/DraftPlayerPicker';
 
 const handleBid = (leagueId, value) =>
@@ -18,30 +17,12 @@ const Draft = (props) => {
     props.currentLeaugue._id,
     props.currentLeague.currentBids[props.currentLeague.currentBids.length - 1].value + 1
   );
-  /*
-  <Col xs={12} md={8} lg={8}>
-    <DraftCurrentPlayer
-      currentUser={props.currentUser}
-      currentLeague={props.currentLeague}
-    />
-  </Col>
-  */
 
-  if(props.subsLoading) {
-    return (
-      <Grid fluid={true}>
-        <Row>
-          <Col xs={12} md={12} lg={12}>
-            <h3 className="text-center">
-              Loading...
-            </h3>
-          </Col>
-        </Row>
-      </Grid>
-    );
-  }
-
-  return (
+  return props.subsLoading ? (
+    <h3 className="text-center">
+      Loading...
+    </h3>
+  ) : (
     <Grid fluid={true}>
       <DraftStatusBanner isDone={props.currentLeague.isDraftDone} />
       <DraftStartButton
@@ -63,10 +44,13 @@ const Draft = (props) => {
           />
         </Col>
         <Col xs={12} md={12} lg={12}>
-          <DraftBoard
-            currentLeagueUsers={props.currentLeagueUsers}
-            currentLeague={props.currentLeague}
-          />
+          <Row>
+            <Col xs={12} md={12} lg={12}>
+                {props.currentLeagueUsers.map( (user) =>
+                  <DraftBoardUserItem key={user._id} user={user} />
+                )}
+            </Col>
+          </Row>
         </Col>
       </Row>
     </Grid>
@@ -74,8 +58,8 @@ const Draft = (props) => {
 };
 
 export default createContainer( (props) => {
-  let handle = Meteor.subscribe("league", props.params.leagueId);
-  let usersHandle = Meteor.subscribe("usersInLeague", props.params.leagueId);
+  let handle = Meteor.subscribe('league', props.params.leagueId);
+  let usersHandle = Meteor.subscribe('usersInLeague', props.params.leagueId);
 
   return {
     subsLoading: !handle.ready(),
