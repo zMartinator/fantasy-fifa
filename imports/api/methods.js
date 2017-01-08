@@ -11,11 +11,11 @@ Meteor.methods({
       var foundLeague = League.findOne(leagueId);
 
       if(!foundLeague) {
-        throw new Meteor.Error("invalid-league", "League not found");
+        throw new Meteor.Error('invalid-league', 'League not found');
       }
 
       if(foundLeague.usersInLeague.length >= foundLeague.maxSize) {
-        throw new Meteor.Error("league-full", "This league is already full");
+        throw new Meteor.Error('league-full', 'This league is already full');
       }
 
       foundLeague.usersInLeague.push(userId);
@@ -50,26 +50,26 @@ Meteor.methods({
     }));
 
     if( !Meteor.userId() ) {
-      throw new Meteor.Error("not-logged-in", "You must be logged in to create a league");
+      throw new Meteor.Error('not-logged-in', 'You must be logged in to create a league');
     }
 
     var createdLeague = new League();
-    createdLeague.set("usersInLeague", [Meteor.userId()]);
-    createdLeague.set("leagueCreator", Meteor.userId());
-    createdLeague.set("name", formLeagueName);
-    createdLeague.set("maxLeagueSize", formLeagueUserSize);
-    createdLeague.set("maxTeamSize", formMaxTeamSize);
-    createdLeague.set("auctionStartingMoney", formAuctionStartingMoney);
-    createdLeague.set("startTimeBetweenNomination", formTimeBetweenNomination);
-    createdLeague.set("startBidTime", formBidTime);
-    createdLeague.set("isDraftDone", false);
-    createdLeague.set("userTurnOrder", []);
-    createdLeague.set("currentUserTurnIndex", 0);
-    createdLeague.set("currentBidClock", 0);
-    createdLeague.set("currentNominationClock", 0);
-    createdLeague.set("currentPlayerUpForBidId", "");
-    createdLeague.set("currentBids", []);
-    createdLeague.set("didNominateOnTime", false);
+    createdLeague.set('usersInLeague', [Meteor.userId()]);
+    createdLeague.set('leagueCreator', Meteor.userId());
+    createdLeague.set('name', formLeagueName);
+    createdLeague.set('maxLeagueSize', formLeagueUserSize);
+    createdLeague.set('maxTeamSize', formMaxTeamSize);
+    createdLeague.set('auctionStartingMoney', formAuctionStartingMoney);
+    createdLeague.set('startTimeBetweenNomination', formTimeBetweenNomination);
+    createdLeague.set('startBidTime', formBidTime);
+    createdLeague.set('isDraftDone', false);
+    createdLeague.set('userTurnOrder', []);
+    createdLeague.set('currentUserTurnIndex', 0);
+    createdLeague.set('currentBidClock', 0);
+    createdLeague.set('currentNominationClock', 0);
+    createdLeague.set('currentPlayerUpForBidId', '');
+    createdLeague.set('currentBids', []);
+    createdLeague.set('didNominateOnTime', false);
 
     createdLeague.save();
   },
@@ -81,14 +81,14 @@ Meteor.methods({
     // TODO: Set all users money in League to starting amount.
     // TODO: change the limit for the league to the current League Size.
 
-    currentLeague.set("didNominateOnTime", false);
-    currentLeague.set("currentNominationClock", currentLeague.startTimeBetweenNomination);
-    currentLeague.set("isDraftDone", false);
-    currentLeague.set("userTurnOrder", _.shuffle(currentLeague.usersInLeague));
+    currentLeague.set('didNominateOnTime', false);
+    currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
+    currentLeague.set('isDraftDone', false);
+    currentLeague.set('userTurnOrder', _.shuffle(currentLeague.usersInLeague));
 
     currentLeague.save();
 
-    Meteor.call("kickOffNomination", leagueId);
+    Meteor.call('kickOffNomination', leagueId);
 
     return true;
   },
@@ -101,7 +101,7 @@ Meteor.methods({
       check(userId, String);
 
       if( !userId ) {
-        throw new Meteor.Error("not-logged-in", "You must be logged in to nominate a player");
+        throw new Meteor.Error('not-logged-in', 'You must be logged in to nominate a player');
       }
 
       // TODO: Check that player is available still.
@@ -109,13 +109,13 @@ Meteor.methods({
       let currentUser = Meteor.users.findOne(userId);
 
       if( userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex] ) {
-        throw new Meteor.Error("out-of-turn", "It is not your turn to nominate");
+        throw new Meteor.Error('out-of-turn', 'It is not your turn to nominate');
       }
 
-      currentLeague.set("currentNominationClock", 0);
-      currentLeague.set("currentPlayerUpForBidId", playerName);
-      currentLeague.set("currentBidClock", currentLeague.startBidTime);
-      currentLeague.set("didNominateOnTime", true);
+      currentLeague.set('currentNominationClock', 0);
+      currentLeague.set('currentPlayerUpForBidId', playerName);
+      currentLeague.set('currentBidClock', currentLeague.startBidTime);
+      currentLeague.set('didNominateOnTime', true);
       currentLeague.currentBids.push({
         value: 1,
         userId: userId,
@@ -125,7 +125,7 @@ Meteor.methods({
       currentLeague.save();
 
 
-      Meteor.call("kickOffBidding", leagueId, playerName);
+      Meteor.call('kickOffBidding', leagueId, playerName);
 
       return true;
   },
@@ -144,7 +144,7 @@ Meteor.methods({
       return false;
     }
 
-    currentLeague.set("currentBidClock", currentLeague.startBidTime);
+    currentLeague.set('currentBidClock', currentLeague.startBidTime);
     currentLeague.currentBids.push({
       value: bidAmount,
       userId: userId,
@@ -164,13 +164,13 @@ Meteor.methods({
       var currentLeague = League.findOne(leagueId);
 
       if(currentLeague.currentNominationClock <= 0 && !currentLeague.didNominateOnTime) { // SKIP CONDITION
-        currentLeague.set("currentNominationClock", currentLeague.startTimeBetweenNomination);
-        currentLeague.set("currentUserTurnIndex", (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length);
+        currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
+        currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length);
         currentLeague.save();
       } else if(currentLeague.didNominateOnTime) {
         Meteor.clearInterval(intervalId);
       } else {
-        currentLeague.inc("currentNominationClock", -1);
+        currentLeague.inc('currentNominationClock', -1);
         currentLeague.save();
       }
 
@@ -194,10 +194,10 @@ Meteor.methods({
         // TODO: convert Meteor.users to Astronomy?!
         Meteor.users.update(currentLeague.currentBids[currentLeague.currentBids.length - 1].userId, {
           $inc: {
-            "profile.draftMoney": -1 * currentLeague.currentBids[currentLeague.currentBids.length - 1].value
+            'profile.draftMoney': -1 * currentLeague.currentBids[currentLeague.currentBids.length - 1].value
           },
           $push: {
-            "profile.team.players": {
+            'profile.team.players': {
               playerName: currentLeague.currentPlayerUpForBidId,
               boughtFor: currentLeague.currentBids[currentLeague.currentBids.length - 1].value
 
@@ -210,33 +210,33 @@ Meteor.methods({
           var nomUserOrder = _.without(currentLeague.userTurnOrder, currentLeague.currentBids[currentLeague.currentBids.length - 1].userId);
 
           if( nomUserOrder.length === 0 ) {
-            currentLeague.set("isDraftDone", true);
+            currentLeague.set('isDraftDone', true);
             currentLeague.save();
             return true;
           } else {
-            currentLeague.set("userTurnOrder", nomUserOrder);
+            currentLeague.set('userTurnOrder', nomUserOrder);
             currentLeague.save(); // TODO: remove this? save once at end if possible.
           }
 
-          currentLeague.set("didNominateOnTime", false);
-          currentLeague.set("currentBids", []);
-          currentLeague.set("currentPlayerUpForBidId", "");
-          currentLeague.set("currentNominationClock", currentLeague.startTimeBetweenNomination);
-          currentLeague.set("currentUserTurnIndex", (currentLeague.currentUserTurnIndex) % currentLeague.userTurnOrder.length - 1 ); // DIFFERENCE HERE
+          currentLeague.set('didNominateOnTime', false);
+          currentLeague.set('currentBids', []);
+          currentLeague.set('currentPlayerUpForBidId', '');
+          currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
+          currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex) % currentLeague.userTurnOrder.length - 1 ); // DIFFERENCE HERE
           currentLeague.save();
         } else {
-          currentLeague.set("didNominateOnTime", false);
-          currentLeague.set("currentBids", []);
-          currentLeague.set("currentPlayerUpForBidId", "");
-          currentLeague.set("currentNominationClock", currentLeague.startTimeBetweenNomination);
-          currentLeague.set("currentUserTurnIndex", (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length ); // DIFFERENCE HERE
+          currentLeague.set('didNominateOnTime', false);
+          currentLeague.set('currentBids', []);
+          currentLeague.set('currentPlayerUpForBidId', '');
+          currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
+          currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length ); // DIFFERENCE HERE
           currentLeague.save();
         }
 
-        Meteor.call("kickOffNomination", leagueId);
+        Meteor.call('kickOffNomination', leagueId);
 
       } else {
-        currentLeague.inc("currentBidClock", -1);
+        currentLeague.inc('currentBidClock', -1);
         currentLeague.save();
       }
     }, 1000);

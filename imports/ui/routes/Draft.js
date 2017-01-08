@@ -1,9 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
 import { createContainer } from 'meteor/react-meteor-data';
 import { League } from '../../api/collections';
-import DraftStatusBanner from '../components/Draft/DraftStatusBanner';
 import DraftStartButton from '../components/Draft/DraftStartButton';
 import DraftCurrentBid from '../components/Draft/DraftCurrentBid';
 import DraftBoardUserItem from '../components/Draft/DraftBoardUserItem';
@@ -31,44 +29,44 @@ class Draft extends Component {
         Loading...
       </h3>
     ) : (
-      <Grid fluid={true}>
-        <DraftStatusBanner isDone={this.props.currentLeague.isDraftDone} />
-        <DraftStartButton
+      <div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <p>
+            {this.props.currentLeague.isDraftDone ?
+              'Draft Done! We did it!' :
+              'Awaiting league creator to start'
+            }
+          </p>
+          <DraftStartButton
+            currentUser={this.props.currentUser}
+            currentLeague={this.props.currentLeague}
+          />
+        </div>
+        <DraftCurrentBid
+          handleBidCallback={this.handleBid}
           currentUser={this.props.currentUser}
           currentLeague={this.props.currentLeague}
         />
-        <Row>
-          <Col xs={12} md={12} lg={12}>
-            <DraftCurrentBid
-              handleBidCallback={this.handleBid}
-              currentUser={this.props.currentUser}
-              currentLeague={this.props.currentLeague}
-            />
-          </Col>
-          <Col xs={12} md={12} lg={12}>
-            <DraftPlayerPicker
-              currentUser={this.props.currentUser}
-              currentLeague={this.props.currentLeague}
-            />
-          </Col>
-          <Col xs={12} md={12} lg={12}>
-            <Row>
-              <Col xs={12} md={12} lg={12}>
-                  {this.props.currentLeagueUsers.map( (user) =>
-                    <DraftBoardUserItem key={user._id} user={user} />
-                  )}
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Grid>
+        <DraftPlayerPicker
+          currentUser={this.props.currentUser}
+          currentLeague={this.props.currentLeague}
+        />
+        <div>
+          {this.props.currentLeagueUsers.map( (user) =>
+            <DraftBoardUserItem key={user._id} user={user} />
+          )}
+        </div>
+      </div>
     );
   }
 
 };
 
 export default createContainer( (props) => {
-  console.log(props);
   let handle = Meteor.subscribe('league', props.params.leagueId);
   let usersHandle = Meteor.subscribe('usersInLeague', props.params.leagueId);
 
