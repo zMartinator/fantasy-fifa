@@ -8,16 +8,15 @@ class LeagueCreationForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(event) {
+    event.preventDefault();
 
-    let formLeagueName = React.findDOMNode(this.refs.leagueName).value.trim();
-    let formLeagueUserSize = React.findDOMNode(this.refs.leagueUserSize).value;
-    let formMaxTeamSize = React.findDOMNode(this.refs.maxTeamSize).value;
-    let formAuctionStartingMoney = React.findDOMNode(this.refs.auctionStartingMoney).value;
-    let formTimeBetweenNomination = React.findDOMNode(this.refs.timeBetweenNomination).value;
-    let formBidTime = React.findDOMNode(this.refs.bidTime).value;
-    //let formLeagueIsDivisions = React.findDOMNode(this.refs.leagueIsDivisions).checked;
+    let formLeagueName = this.leagueName.value.trim();
+    let formLeagueUserSize = this.leagueUserSize.value;
+    let formMaxTeamSize = this.maxTeamSize.value;
+    let formAuctionStartingMoney = this.auctionStartingMoney.value;
+    let formTimeBetweenNomination = this.timeBetweenNomination.value;
+    let formBidTime = this.bidTime.value;
 
     try {
       formLeagueUserSize = parseInt( formLeagueUserSize );
@@ -39,11 +38,19 @@ class LeagueCreationForm extends Component {
     }
 
     // Save to Server
-    Meteor.call('CreateLeague', formLeagueName, formLeagueUserSize, formMaxTeamSize, formAuctionStartingMoney, formTimeBetweenNomination, formBidTime);
+    Meteor.call(
+      'CreateLeague',
+      formLeagueName,
+      formLeagueUserSize,
+      formMaxTeamSize,
+      formAuctionStartingMoney,
+      formTimeBetweenNomination,
+      formBidTime
+    );
 
     // RESET FORM
-    React.findDOMNode(this.refs.leagueName).value = '';
-    React.findDOMNode(this.refs.leagueUserSize).value = 4;
+    // React.findDOMNode(this.refs.leagueName).value = '';
+    // React.findDOMNode(this.refs.leagueUserSize).value = 4;
 
     if(this.props.doneCallback) {
       this.props.doneCallback();
@@ -56,27 +63,27 @@ class LeagueCreationForm extends Component {
       <form className="leagueCreationForm" onSubmit={this.handleSubmit}>
         <div className="form-group">
           <label htmlFor="leagueName">League name</label>
-          <input type="text" id="leagueName" ref="leagueName" className="form-control" placeholder="e.g., Romeo Rumble" maxLength="30"/>
+          <input type="text" id="leagueName" ref={(node) => this.leagueName = node} className="form-control" placeholder="e.g., Romeo Rumble" maxLength="30"/>
         </div>
         <div className="form-group">
           <label htmlFor="leagueUserSize">Max League Size</label>
-          <input type="number" min="2" max="128" step="1" defaultValue="4" className="form-control" id="leagueUserSize" ref="leagueUserSize" />
+          <input type="number" min="2" max="128" step="1" defaultValue="4" className="form-control" id="leagueUserSize" ref={(node) => this.leagueUserSize = node} />
         </div>
         <div className="form-group">
           <label htmlFor="maxTeamSize">Max Team Size</label>
-          <input type="number" min="1" max="100" step="1" defaultValue="18" className="form-control" id="maxTeamSize" ref="maxTeamSize" />
+          <input type="number" min="1" max="100" step="1" defaultValue="18" className="form-control" id="maxTeamSize" ref={(node) => this.maxTeamSize = node} />
         </div>
         <div className="form-group">
           <label htmlFor="auctionStartingMoney">Starting Auction Money</label>
-          <input type="number" min="1" step="1" defaultValue="100" className="form-control" id="auctionStartingMoney" ref="auctionStartingMoney" />
+          <input type="number" min="1" step="1" defaultValue="100" className="form-control" id="auctionStartingMoney" ref={(node) => this.auctionStartingMoney = node} />
         </div>
         <div className="form-group">
           <label htmlFor="timeBetweenNomination">Time Between Nomination</label>
-          <input type="number" min="5" step="1" defaultValue="15" className="form-control" id="timeBetweenNomination" ref="timeBetweenNomination" />
+          <input type="number" min="5" step="1" defaultValue="15" className="form-control" id="timeBetweenNomination" ref={(node) => this.timeBetweenNomination = node} />
         </div>
         <div className="form-group">
           <label htmlFor="bidTime">Bid Time</label>
-          <input type="number" min="5" step="1" defaultValue="10" className="form-control" id="bidTime" ref="bidTime" />
+          <input type="number" min="5" step="1" defaultValue="10" className="form-control" id="bidTime" ref={(node) => this.bidTime = node} />
         </div>
 
         <button type="submit" className="btn btn-primary">Submit</button>

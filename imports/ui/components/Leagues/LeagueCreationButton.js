@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { createContainer } from 'meteor/react-meteor-data';
 import { Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import LeagueCreationForm from './LeagueCreationForm';
@@ -34,7 +36,7 @@ class LeagueCreationButton extends Component {
   }
 
   render() {
-    return this.props.currentUser ? (
+    return this.props.user ? (
         <div>
           <Button bsStyle="primary" bsSize="large" onClick={this.handleOpenModal}>
             Create League
@@ -46,7 +48,7 @@ class LeagueCreationButton extends Component {
             style={modalStyles}
           >
             <h1>Create League</h1>
-            <LeagueCreationForm currentUserId={this.props.currentUser._id} doneCallback={this.handleCloseModal} />
+            <LeagueCreationForm doneCallback={this.handleCloseModal} />
           </Modal>
         </div>
       ) : (
@@ -57,4 +59,6 @@ class LeagueCreationButton extends Component {
   }
 };
 
-export default LeagueCreationButton;
+export default createContainer( () => ({
+  user: Meteor.user(),
+}), LeagueCreationButton);

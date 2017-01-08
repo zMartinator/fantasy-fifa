@@ -14,13 +14,13 @@ class LeagueItem extends Component {
     Meteor.call(
       'registerUserForLeague',
       this.props.leagueInfo._id,
-      this.props.currentUser._id
+      this.props.user._id
     );
   }
 
   render() {
-    const isAlreadyInLeague = this.props.currentUser ?
-      this.props.leagueInfo.usersInLeague.includes(this.props.currentUser._id) :
+    const isAlreadyInLeague = this.props.user ?
+      this.props.leagueInfo.usersInLeague.includes(this.props.user._id) :
       false;
 
     return (
@@ -32,7 +32,7 @@ class LeagueItem extends Component {
             display: 'flex',
             alignItems: 'center',
           }}>
-            <h4><Link to={"/draft/" + this.props.leagueInfo._id}> {this.props.leagueInfo.name} </Link></h4>
+            <h4><Link to={`/draft/${this.props.leagueInfo._id}`}> {this.props.leagueInfo.name} </Link></h4>
           </div>
           <div style={{
             display: 'flex',
@@ -46,9 +46,9 @@ class LeagueItem extends Component {
           }}>
             <LeagueJoinButton
               handleClick={this.handleJoinLeague}
-              isLoggedIn={this.props.currentUser}
+              isLoggedIn={this.props.user}
               isAlreadyInLeague={isAlreadyInLeague}
-              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxSize}
+              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxLeagueSize}
             />
           </div>
         </div>

@@ -1,13 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
-import { Leagues, League } from './collections';
+import { League } from './collections';
+import { _ } from 'meteor/underscore';
 
 Meteor.methods({
   "registerUserForLeague": function(leagueId, userId) {
       check(leagueId, String);
       check(userId, String);
 
-      var foundLeague = Leagues.findOne(leagueId);
+      var foundLeague = League.findOne(leagueId);
 
       if(!foundLeague) {
         throw new Meteor.Error("invalid-league", "League not found");
@@ -17,7 +18,7 @@ Meteor.methods({
         throw new Meteor.Error("league-full", "This league is already full");
       }
 
-      foundLeague.push("usersInLeague", userId);
+      foundLeague.usersInLeague.push(userId);
       foundLeague.save();
   },
 
@@ -61,21 +62,21 @@ Meteor.methods({
     createdLeague.set("auctionStartingMoney", formAuctionStartingMoney);
     createdLeague.set("startTimeBetweenNomination", formTimeBetweenNomination);
     createdLeague.set("startBidTime", formBidTime);
-    createdLeague.set("isDraftDone", null );
-    createdLeague.set("userTurnOrder", [] );
-    createdLeague.set("currentUserTurnIndex", 0 );
-    createdLeague.set("currentBidClock", 0 );
-    createdLeague.set("currentNominationClock", 0 );
-    createdLeague.set("currentPlayerUpForBidId", "" );
-    createdLeague.set("currentBids", [] );
-    createdLeague.set("didNominateOnTime", false );
+    createdLeague.set("isDraftDone", false);
+    createdLeague.set("userTurnOrder", []);
+    createdLeague.set("currentUserTurnIndex", 0);
+    createdLeague.set("currentBidClock", 0);
+    createdLeague.set("currentNominationClock", 0);
+    createdLeague.set("currentPlayerUpForBidId", "");
+    createdLeague.set("currentBids", []);
+    createdLeague.set("didNominateOnTime", false);
 
     createdLeague.save();
   },
 
   "startDraft": function(leagueId) {
     check(leagueId, String);
-    let currentLeague = Leagues.findOne(leagueId);
+    let currentLeague = League.findOne(leagueId);
 
     // TODO: Set all users money in League to starting amount.
     // TODO: change the limit for the league to the current League Size.
@@ -104,7 +105,7 @@ Meteor.methods({
       }
 
       // TODO: Check that player is available still.
-      let currentLeague = Leagues.findOne(leagueId);
+      let currentLeague = League.findOne(leagueId);
       let currentUser = Meteor.users.findOne(userId);
 
       if( userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex] ) {
@@ -115,7 +116,7 @@ Meteor.methods({
       currentLeague.set("currentPlayerUpForBidId", playerName);
       currentLeague.set("currentBidClock", currentLeague.startBidTime);
       currentLeague.set("didNominateOnTime", true);
-      currentLeague.push("currentBids", {
+      currentLeague.currentBids.push({
         value: 1,
         userId: userId,
         username: currentUser.username
@@ -135,7 +136,7 @@ Meteor.methods({
     check(leagueId, String);
     check(bidAmount, Number);
     check(userId, String);
-    let currentLeague = Leagues.findOne(leagueId);
+    let currentLeague = League.findOne(leagueId);
     let currentUser = Meteor.users.findOne(userId);
 
     // TODO: check if bidAmount is > maxBid and if it is return false.
@@ -144,7 +145,7 @@ Meteor.methods({
     }
 
     currentLeague.set("currentBidClock", currentLeague.startBidTime);
-    currentLeague.push("currentBids", {
+    currentLeague.currentBids.push({
       value: bidAmount,
       userId: userId,
       username: currentUser.username
@@ -160,7 +161,7 @@ Meteor.methods({
     check(leagueId, String);
 
     var intervalId = Meteor.setInterval(function() {
-      var currentLeague = Leagues.findOne(leagueId);
+      var currentLeague = League.findOne(leagueId);
 
       if(currentLeague.currentNominationClock <= 0 && !currentLeague.didNominateOnTime) { // SKIP CONDITION
         currentLeague.set("currentNominationClock", currentLeague.startTimeBetweenNomination);
@@ -186,7 +187,7 @@ Meteor.methods({
     check(playerName, String);
 
     var intervalId = Meteor.setInterval(function() {
-      var currentLeague = Leagues.findOne(leagueId);
+      var currentLeague = League.findOne(leagueId);
 
       if(currentLeague.currentBidClock <= 0) {
         Meteor.clearInterval(intervalId);

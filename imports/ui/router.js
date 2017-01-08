@@ -20,8 +20,6 @@ Meteor.startup( () => {
         <IndexRoute component={ Home } />
         <Route path="about" component={About} />
         <Route path="draft/:leagueId" component={Draft} />
-        {/* <Route path="signin" component={ Accounts.ui.LoginForm } formState={ STATES.SIGN_IN } /> */}
-        {/* <Route path="signup" component={ Accounts.ui.LoginForm } formState={ STATES.SIGN_UP } /> */}
       </Route>
       <Route path="*" component={ NotFound } />
     </Router>,

@@ -12,7 +12,7 @@ const LeagueListContainer = (props) => (
       {props.leagueList.map( (league) =>
         <LeagueItem
           key={league._id}
-          currentUser={props.currentUser}
+          user={props.user}
           leagueInfo={league}
         />
       )}
@@ -21,10 +21,11 @@ const LeagueListContainer = (props) => (
 );
 
 export default createContainer( () => {
-  let handle = Meteor.subscribe("leagues");
+  let handle = Meteor.subscribe('leagues');
 
   return {
+    user: Meteor.user(),
     leagueListLoading: !handle.ready(),
-    leagueList: Leagues.find().fetch()
+    leagueList: Leagues.find().fetch(),
   };
 }, LeagueListContainer);
