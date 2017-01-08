@@ -2,7 +2,6 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-// import { Accounts } from 'meteor/accounts-base';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-material-design/dist/css/bootstrap-material-design.min.css';

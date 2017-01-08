@@ -1,5 +1,6 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
+import LoginButtons from './LoginButtons';
 
 const Header = () => (
   <div style={{
@@ -29,6 +30,7 @@ const Header = () => (
     }}>
       <IndexLink to="/" style={{ padding: '5px' }}>Home</IndexLink>
       <Link to="/about" style={{ padding: '5px' }}>About</Link>
+      <LoginButtons />
     </div>
   </div>
 );

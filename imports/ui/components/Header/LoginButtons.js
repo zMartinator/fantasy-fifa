@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
+import { createContainer } from 'meteor/react-meteor-data';
 
 class LoginButtons extends Component {
   constructor(props) {
@@ -79,20 +80,33 @@ class LoginButtons extends Component {
   }
 
   render() {
-    return (
+    return this.props.user ? (
       <div>
-        <p>username:</p>
-        <input value={this.state.username} onChange={this.changeUsername} type="text" />
-        <br/>
-        <p>password:</p>
-        <input value={this.state.password} onChange={this.changePassword} type="password" />
-        <br/>
-        <Button bsSize="sm" bsStyle="primary" block onClick={this.onLogin} >Login</Button>
-        <Button bsSize="sm" bsStyle="primary" block onClick={this.onCreateUser} >Sign Up</Button>
-        <Button bsSize="sm" bsStyle="default" block onClick={this.onLogout} >Logout</Button>
+        <span style={{
+          color: '#000000',
+          fontSize: '12px',
+        }}>
+          Hello {this.props.user.username}
+        </span>
+        <Button bsSize="xs" bsStyle="primary" onClick={this.onLogout} >Logout</Button>
+      </div>
+    ) : (
+      <div>
+        <input placeholder="username" value={this.state.username} onChange={this.changeUsername} type="text" style={{
+          color: '#000000',
+          maxWidth: '80px',
+        }} />
+        <input placeholder="password" value={this.state.password} onChange={this.changePassword} type="password" style={{
+          color: '#000000',
+          maxWidth: '80px',
+        }} />
+        <Button bsSize="xs" bsStyle="primary" onClick={this.onLogin} >Login</Button>
+        <Button bsSize="xs" bsStyle="primary" onClick={this.onCreateUser} >Sign Up</Button>
       </div>
     );
   }
 }
 
-export default LoginButtons;
+export default createContainer( () => ({
+  user: Meteor.user()
+}), LoginButtons);
