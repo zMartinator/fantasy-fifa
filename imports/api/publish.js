@@ -2,16 +2,16 @@ import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { Players, Leagues } from './collections';
 
-Meteor.publish("leagues", function() {
+Meteor.publish('leagues', function() {
   return Leagues.find();
 });
 
-Meteor.publish("league", function(leagueId) {
+Meteor.publish('league', function(leagueId) {
   check(leagueId, String);
   return Leagues.find(leagueId);
 });
 
-Meteor.publish("usersInLeague", function(leagueId) {
+Meteor.publish('usersInLeague', function(leagueId) {
   check(leagueId, String);
   var currentLeague = Leagues.findOne(leagueId);
   if(currentLeague) {
@@ -23,6 +23,6 @@ Meteor.publish("usersInLeague", function(leagueId) {
   return Meteor.users.find();
 });
 
-Meteor.publish("players", function() {
+Meteor.publish('players', function() {
   return Players.find();
 });

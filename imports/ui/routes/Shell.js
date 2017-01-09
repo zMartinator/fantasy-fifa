@@ -2,23 +2,19 @@ import React, { Component } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-class Shell extends Component {
-  render() {
-    return (
-      <div>
-        <Header />
+const Shell = (props) => (
+  <div>
+    <Header />
 
-        <main style={{
-          paddingLeft: '15px',
-          paddingRight: '15px',
-        }}>
-          {this.props.children}
-        </main>
+    <main style={{
+      paddingLeft: '15px',
+      paddingRight: '15px',
+    }}>
+      {props.children}
+    </main>
 
-        <Footer />
-      </div>
-    );
-  }
-}
+    <Footer />
+  </div>
+);
 
 export default Shell;

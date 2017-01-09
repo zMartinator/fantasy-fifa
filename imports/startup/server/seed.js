@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { Leagues } from '../../api/collections/leagues';
+import { Leagues, Players } from '../../api/collections';
+import importData from '../../utils/importData';
 
 Meteor.startup( () => {
   if (Meteor.users.find().count() === 0) {
@@ -41,50 +42,12 @@ Meteor.startup( () => {
       didNominateOnTime: false
     });
 
-    Leagues.insert({
-      usersInLeague: [userId, userId2],
-      leagueCreator: userId,
-
-      name: 'Romeo Rumble 2',
-      maxLeagueSize: 2,
-      maxTeamSize: 3,
-      auctionStartingMoney: 100,
-      startTimeBetweenNomination: 10,
-      startBidTime: 10,
-
-      isDraftDone: null,
-      userTurnOrder: [],
-      currentUserTurnIndex: 0,
-      currentBidClock: 0,
-      currentNominationClock: 0,
-      currentPlayerUpForBidId: '',
-      currentBids:[],
-
-      didNominateOnTime: false
-    });
-
-    Leagues.insert({
-      usersInLeague: [userId, userId2],
-      leagueCreator: userId,
-
-      name: 'Romeo Rumble 3',
-      maxLeagueSize: 4,
-      maxTeamSize: 3,
-      auctionStartingMoney: 100,
-      startTimeBetweenNomination: 10,
-      startBidTime: 10,
-
-      isDraftDone: null,
-      userTurnOrder: [],
-      currentUserTurnIndex: 0,
-      currentBidClock: 0,
-      currentNominationClock: 0,
-      currentPlayerUpForBidId: '',
-      currentBids:[],
-
-      didNominateOnTime: false
-    });
-
     console.log('Seeded leagues');
+  }
+
+  if(Players.find().count() === 0) {
+    importData();
+
+    console.log('Seeded players');
   }
 });
