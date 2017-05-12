@@ -43,26 +43,9 @@ class LoginButtons extends Component {
   }
 
   onLogin() {
-    Meteor.loginWithPassword(
-      this.state.username,
-      this.state.password,
-      (err) => {
-        if(err) {
-          console.log('ERROR logging in!');
-          console.error(err);
-        } else {
-          this.resetInputs();
-        }
-      });
-  }
-
-  onCreateUser() {
-    Accounts.createUser({
-      username: this.state.username,
-      password: this.state.password,
-    }, (err) => {
-      if(err) {
-        console.log('ERROR creating user!');
+    Meteor.loginWithPassword(this.state.username, this.state.password, err => {
+      if (err) {
+        console.log('ERROR logging in!');
         console.error(err);
       } else {
         this.resetInputs();
@@ -70,9 +53,26 @@ class LoginButtons extends Component {
     });
   }
 
+  onCreateUser() {
+    Accounts.createUser(
+      {
+        username: this.state.username,
+        password: this.state.password,
+      },
+      err => {
+        if (err) {
+          console.log('ERROR creating user!');
+          console.error(err);
+        } else {
+          this.resetInputs();
+        }
+      },
+    );
+  }
+
   onLogout() {
-    Meteor.logout( (err) => {
-      if(err) {
+    Meteor.logout(err => {
+      if (err) {
         console.log('ERROR logging out!');
         console.error(err);
       }
@@ -80,33 +80,54 @@ class LoginButtons extends Component {
   }
 
   render() {
-    return this.props.user ? (
-      <div>
-        <span style={{
-          color: '#000000',
-          fontSize: '12px',
-        }}>
-          Hello {this.props.user.username}
-        </span>
-        <Button bsSize="xs" bsStyle="primary" onClick={this.onLogout} >Logout</Button>
-      </div>
-    ) : (
-      <div>
-        <input placeholder="username" value={this.state.username} onChange={this.changeUsername} type="text" style={{
-          color: '#000000',
-          maxWidth: '80px',
-        }} />
-        <input placeholder="password" value={this.state.password} onChange={this.changePassword} type="password" style={{
-          color: '#000000',
-          maxWidth: '80px',
-        }} />
-        <Button bsSize="xs" bsStyle="primary" onClick={this.onLogin} >Login</Button>
-        <Button bsSize="xs" bsStyle="primary" onClick={this.onCreateUser} >Sign Up</Button>
-      </div>
-    );
+    return this.props.user
+      ? <div>
+          <span
+            style={{
+              color: '#000000',
+              fontSize: '12px',
+            }}
+          >
+            Hello {this.props.user.username}
+          </span>
+          <Button bsSize="xs" bsStyle="primary" onClick={this.onLogout}>
+            Logout
+          </Button>
+        </div>
+      : <div>
+          <input
+            placeholder="username"
+            value={this.state.username}
+            onChange={this.changeUsername}
+            type="text"
+            style={{
+              color: '#000000',
+              maxWidth: '80px',
+            }}
+          />
+          <input
+            placeholder="password"
+            value={this.state.password}
+            onChange={this.changePassword}
+            type="password"
+            style={{
+              color: '#000000',
+              maxWidth: '80px',
+            }}
+          />
+          <Button bsSize="xs" bsStyle="primary" onClick={this.onLogin}>
+            Login
+          </Button>
+          <Button bsSize="xs" bsStyle="primary" onClick={this.onCreateUser}>
+            Sign Up
+          </Button>
+        </div>;
   }
 }
 
-export default createContainer( () => ({
-  user: Meteor.user()
-}), LoginButtons);
+export default createContainer(
+  () => ({
+    user: Meteor.user(),
+  }),
+  LoginButtons,
+);

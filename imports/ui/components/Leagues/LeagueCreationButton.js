@@ -36,9 +36,13 @@ class LeagueCreationButton extends Component {
   }
 
   render() {
-    return this.props.user ? (
-        <div>
-          <Button bsStyle="primary" bsSize="large" onClick={this.handleOpenModal}>
+    return this.props.user
+      ? <div>
+          <Button
+            bsStyle="primary"
+            bsSize="large"
+            onClick={this.handleOpenModal}
+          >
             Create League
           </Button>
 
@@ -51,14 +55,15 @@ class LeagueCreationButton extends Component {
             <LeagueCreationForm doneCallback={this.handleCloseModal} />
           </Modal>
         </div>
-      ) : (
-        <Button bsStyle="default" bsSize="large" disabled >
+      : <Button bsStyle="default" bsSize="large" disabled>
           Login to Create
-        </Button>
-      )
+        </Button>;
   }
-};
+}
 
-export default createContainer( () => ({
-  user: Meteor.user(),
-}), LeagueCreationButton);
+export default createContainer(
+  () => ({
+    user: Meteor.user(),
+  }),
+  LeagueCreationButton,
+);

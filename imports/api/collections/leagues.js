@@ -9,7 +9,7 @@ const Bid = Class.create({
     value: Number,
     userId: String,
     username: String,
-  }
+  },
 });
 
 const League = Class.create({
@@ -34,10 +34,7 @@ const League = Class.create({
     currentPlayerUpForBidId: String,
     currentBids: [Bid],
     didNominateOnTime: Boolean,
-  }
+  },
 });
 
-export {
-  Leagues,
-  League,
-};
+export { Leagues, League };

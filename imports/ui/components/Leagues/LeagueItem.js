@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import LeagueJoinButton from './LeagueJoinButton';
 
 class LeagueItem extends Component {
@@ -14,47 +14,67 @@ class LeagueItem extends Component {
     Meteor.call(
       'registerUserForLeague',
       this.props.leagueInfo._id,
-      this.props.user._id
+      this.props.user._id,
     );
   }
 
   render() {
-    const isAlreadyInLeague = this.props.user ?
-      this.props.leagueInfo.usersInLeague.includes(this.props.user._id) :
-      false;
+    const isAlreadyInLeague = this.props.user
+      ? this.props.leagueInfo.usersInLeague.includes(this.props.user._id)
+      : false;
 
     return (
-        <div style={{
+      <div
+        style={{
           display: 'flex',
           justifyContent: 'space-between',
-        }}>
-          <div style={{
+        }}
+      >
+        <div
+          style={{
             display: 'flex',
             alignItems: 'center',
-          }}>
-            <h4><Link to={`/draft/${this.props.leagueInfo._id}`}> {this.props.leagueInfo.name} </Link></h4>
-          </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}>
-            <p style={{margin: '0'}}>{this.props.leagueInfo.usersInLeague.length}/{this.props.leagueInfo.maxLeagueSize} Spots</p>
-          </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}>
-            <LeagueJoinButton
-              handleClick={this.handleJoinLeague}
-              isLoggedIn={this.props.user}
-              isAlreadyInLeague={isAlreadyInLeague}
-              isFull={this.props.leagueInfo.usersInLeague.length === this.props.leagueInfo.maxLeagueSize}
-            />
-          </div>
+          }}
+        >
+          <h4>
+            <Link to={`/draft/${this.props.leagueInfo._id}`}>
+              {' '}{this.props.leagueInfo.name}{' '}
+            </Link>
+          </h4>
         </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <p style={{ margin: '0' }}>
+            {this.props.leagueInfo.usersInLeague.length}
+            /
+            {this.props.leagueInfo.maxLeagueSize}
+            {' '}
+            Spots
+          </p>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <LeagueJoinButton
+            handleClick={this.handleJoinLeague}
+            isLoggedIn={this.props.user}
+            isAlreadyInLeague={isAlreadyInLeague}
+            isFull={
+              this.props.leagueInfo.usersInLeague.length ===
+                this.props.leagueInfo.maxLeagueSize
+            }
+          />
+        </div>
+      </div>
     );
   }
-
-};
+}
 
 export default LeagueItem;

@@ -1,14 +1,18 @@
-Accounts.onCreateUser(function(options, user) {
+import { Accounts } from 'meteor/accounts-base';
+
+Accounts.onCreateUser((options, user) => {
   options.profile = options.profile || {};
 
   // Can only have one team/draft per user this way.
   options.profile.team = {
     teamName: 'defaultTeamName',
-    players: []
+    players: [],
   };
   options.profile.draftMoney = 100; // TODO: hardcoded to 100
 
-  if (options.profile)
+  if (options.profile) {
     user.profile = options.profile;
+  }
+
   return user;
 });

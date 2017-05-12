@@ -10,16 +10,18 @@ class DraftStartButton extends Component {
   }
 
   startDraft() {
-    Meteor.call('startDraft', this.props.currentLeague._id)
+    Meteor.call('startDraft', this.props.currentLeague._id);
   }
 
   render() {
-    if(!this.props.currentUser) {
+    if (!this.props.currentUser) {
       return null;
     }
 
-    if( (this.props.currentLeague.isDraftDone === false) &&
-        (this.props.currentUser._id === this.props.currentLeague.leagueCreator) ) {
+    if (
+      this.props.currentLeague.isDraftDone === false &&
+      this.props.currentUser._id === this.props.currentLeague.leagueCreator
+    ) {
       return (
         <Button
           bsSize="large"
@@ -34,6 +36,6 @@ class DraftStartButton extends Component {
 
     return null;
   }
-};
+}
 
 export default DraftStartButton;

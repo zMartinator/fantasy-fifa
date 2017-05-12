@@ -4,56 +4,83 @@ import { League } from './collections';
 import { _ } from 'meteor/underscore';
 
 Meteor.methods({
-  "registerUserForLeague": function(leagueId, userId) {
-      check(leagueId, String);
-      check(userId, String);
+  registerUserForLeague(leagueId, userId) {
+    check(leagueId, String);
+    check(userId, String);
 
-      var foundLeague = League.findOne(leagueId);
+    const foundLeague = League.findOne(leagueId);
 
-      if(!foundLeague) {
-        throw new Meteor.Error('invalid-league', 'League not found');
-      }
-
-      if(foundLeague.usersInLeague.length >= foundLeague.maxSize) {
-        throw new Meteor.Error('league-full', 'This league is already full');
-      }
-
-      foundLeague.usersInLeague.push(userId);
-      foundLeague.save();
-  },
-
-
-  "CreateLeague": function(formLeagueName, formLeagueUserSize, formMaxTeamSize, formAuctionStartingMoney, formTimeBetweenNomination, formBidTime) {
-    check(formLeagueName, Match.Where(function(name) {
-      check(name, String);
-      return (name.length > 0 && name.length < 31);
-    }));
-    check(formLeagueUserSize, Match.Where(function(leagueSize) {
-      check(leagueSize, Number);
-      return leagueSize >= 2 && leagueSize < 128;
-    }));
-    check(formMaxTeamSize, Match.Where(function(maxTeamSize) {
-      check(maxTeamSize, Number);
-      return maxTeamSize > 0 && maxTeamSize < 100;
-    }));
-    check(formAuctionStartingMoney, Match.Where(function(startingMoney) {
-      check(startingMoney, Number);
-      return startingMoney >= formMaxTeamSize;
-    }));
-    check(formTimeBetweenNomination, Match.Where(function(time) {
-      check(time, Number);
-      return time >= 2;
-    }));
-    check(formBidTime, Match.Where(function(time) {
-      check(time, Number);
-      return time >= 2;
-    }));
-
-    if( !Meteor.userId() ) {
-      throw new Meteor.Error('not-logged-in', 'You must be logged in to create a league');
+    if (!foundLeague) {
+      throw new Meteor.Error('invalid-league', 'League not found');
     }
 
-    var createdLeague = new League();
+    if (foundLeague.usersInLeague.length >= foundLeague.maxSize) {
+      throw new Meteor.Error('league-full', 'This league is already full');
+    }
+
+    foundLeague.usersInLeague.push(userId);
+    foundLeague.save();
+  },
+
+  CreateLeague(
+    formLeagueName,
+    formLeagueUserSize,
+    formMaxTeamSize,
+    formAuctionStartingMoney,
+    formTimeBetweenNomination,
+    formBidTime,
+  ) {
+    check(
+      formLeagueName,
+      Match.Where(function(name) {
+        check(name, String);
+        return name.length > 0 && name.length < 31;
+      }),
+    );
+    check(
+      formLeagueUserSize,
+      Match.Where(function(leagueSize) {
+        check(leagueSize, Number);
+        return leagueSize >= 2 && leagueSize < 128;
+      }),
+    );
+    check(
+      formMaxTeamSize,
+      Match.Where(function(maxTeamSize) {
+        check(maxTeamSize, Number);
+        return maxTeamSize > 0 && maxTeamSize < 100;
+      }),
+    );
+    check(
+      formAuctionStartingMoney,
+      Match.Where(function(startingMoney) {
+        check(startingMoney, Number);
+        return startingMoney >= formMaxTeamSize;
+      }),
+    );
+    check(
+      formTimeBetweenNomination,
+      Match.Where(function(time) {
+        check(time, Number);
+        return time >= 2;
+      }),
+    );
+    check(
+      formBidTime,
+      Match.Where(function(time) {
+        check(time, Number);
+        return time >= 2;
+      }),
+    );
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error(
+        'not-logged-in',
+        'You must be logged in to create a league',
+      );
+    }
+
+    const createdLeague = new League();
     createdLeague.set('usersInLeague', [Meteor.userId()]);
     createdLeague.set('leagueCreator', Meteor.userId());
     createdLeague.set('name', formLeagueName);
@@ -74,15 +101,18 @@ Meteor.methods({
     createdLeague.save();
   },
 
-  "startDraft": function(leagueId) {
+  startDraft(leagueId) {
     check(leagueId, String);
-    let currentLeague = League.findOne(leagueId);
+    const currentLeague = League.findOne(leagueId);
 
     // TODO: Set all users money in League to starting amount.
     // TODO: change the limit for the league to the current League Size.
 
     currentLeague.set('didNominateOnTime', false);
-    currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
+    currentLeague.set(
+      'currentNominationClock',
+      currentLeague.startTimeBetweenNomination,
+    );
     currentLeague.set('isDraftDone', false);
     currentLeague.set('userTurnOrder', _.shuffle(currentLeague.usersInLeague));
 
@@ -93,123 +123,147 @@ Meteor.methods({
     return true;
   },
 
+  nominatePlayer(playerName, leagueId, userId) {
+    check(playerName, String);
+    check(leagueId, String);
+    check(userId, String);
 
+    if (!userId) {
+      throw new Meteor.Error(
+        'not-logged-in',
+        'You must be logged in to nominate a player',
+      );
+    }
 
-  "nominatePlayer": function(playerName, leagueId, userId) {
-      check(playerName, String);
-      check(leagueId, String);
-      check(userId, String);
+    // TODO: Check that player is available still.
+    const currentLeague = League.findOne(leagueId);
+    const currentUser = Meteor.users.findOne(userId);
 
-      if( !userId ) {
-        throw new Meteor.Error('not-logged-in', 'You must be logged in to nominate a player');
-      }
+    if (
+      userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex]
+    ) {
+      throw new Meteor.Error('out-of-turn', 'It is not your turn to nominate');
+    }
 
-      // TODO: Check that player is available still.
-      let currentLeague = League.findOne(leagueId);
-      let currentUser = Meteor.users.findOne(userId);
+    currentLeague.set('currentNominationClock', 0);
+    currentLeague.set('currentPlayerUpForBidId', playerName);
+    currentLeague.set('currentBidClock', currentLeague.startBidTime);
+    currentLeague.set('didNominateOnTime', true);
+    currentLeague.currentBids.push({
+      value: 1,
+      userId,
+      username: currentUser.username,
+    });
 
-      if( userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex] ) {
-        throw new Meteor.Error('out-of-turn', 'It is not your turn to nominate');
-      }
+    currentLeague.save();
 
-      currentLeague.set('currentNominationClock', 0);
-      currentLeague.set('currentPlayerUpForBidId', playerName);
-      currentLeague.set('currentBidClock', currentLeague.startBidTime);
-      currentLeague.set('didNominateOnTime', true);
-      currentLeague.currentBids.push({
-        value: 1,
-        userId: userId,
-        username: currentUser.username
-      });
+    Meteor.call('kickOffBidding', leagueId, playerName);
 
-      currentLeague.save();
-
-
-      Meteor.call('kickOffBidding', leagueId, playerName);
-
-      return true;
+    return true;
   },
 
-
-
-  "bidOnPlayer": function(leagueId, bidAmount, userId) {
+  bidOnPlayer(leagueId, bidAmount, userId) {
     check(leagueId, String);
     check(bidAmount, Number);
     check(userId, String);
-    let currentLeague = League.findOne(leagueId);
-    let currentUser = Meteor.users.findOne(userId);
+    const currentLeague = League.findOne(leagueId);
+    const currentUser = Meteor.users.findOne(userId);
 
     // TODO: check if bidAmount is > maxBid and if it is return false.
-    if(bidAmount <= currentLeague.currentBids[currentLeague.currentBids.length - 1].value) {
+    if (
+      bidAmount <=
+      currentLeague.currentBids[currentLeague.currentBids.length - 1].value
+    ) {
       return false;
     }
 
     currentLeague.set('currentBidClock', currentLeague.startBidTime);
     currentLeague.currentBids.push({
       value: bidAmount,
-      userId: userId,
-      username: currentUser.username
+      userId,
+      username: currentUser.username,
     });
     currentLeague.save();
 
     return true;
   },
 
-
-
-  "kickOffNomination": function(leagueId) {
+  kickOffNomination(leagueId) {
     check(leagueId, String);
 
-    var intervalId = Meteor.setInterval(function() {
-      var currentLeague = League.findOne(leagueId);
+    const intervalId = Meteor.setInterval(() => {
+      const currentLeague = League.findOne(leagueId);
 
-      if(currentLeague.currentNominationClock <= 0 && !currentLeague.didNominateOnTime) { // SKIP CONDITION
-        currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
-        currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length);
+      if (
+        currentLeague.currentNominationClock <= 0 &&
+        !currentLeague.didNominateOnTime
+      ) {
+        // SKIP CONDITION
+        currentLeague.set(
+          'currentNominationClock',
+          currentLeague.startTimeBetweenNomination,
+        );
+        currentLeague.set(
+          'currentUserTurnIndex',
+          (currentLeague.currentUserTurnIndex + 1) %
+            currentLeague.userTurnOrder.length,
+        );
         currentLeague.save();
-      } else if(currentLeague.didNominateOnTime) {
+      } else if (currentLeague.didNominateOnTime) {
         Meteor.clearInterval(intervalId);
       } else {
         currentLeague.inc('currentNominationClock', -1);
         currentLeague.save();
       }
-
     }, 1000);
 
     return true;
   },
 
-
-
-
-  "kickOffBidding": function(leagueId, playerName) {
+  kickOffBidding(leagueId, playerName) {
     check(leagueId, String);
     check(playerName, String);
 
-    var intervalId = Meteor.setInterval(function() {
-      var currentLeague = League.findOne(leagueId);
+    const intervalId = Meteor.setInterval(() => {
+      const currentLeague = League.findOne(leagueId);
 
-      if(currentLeague.currentBidClock <= 0) {
+      if (currentLeague.currentBidClock <= 0) {
         Meteor.clearInterval(intervalId);
         // TODO: convert Meteor.users to Astronomy?!
-        Meteor.users.update(currentLeague.currentBids[currentLeague.currentBids.length - 1].userId, {
-          $inc: {
-            'profile.draftMoney': -1 * currentLeague.currentBids[currentLeague.currentBids.length - 1].value
+        Meteor.users.update(
+          currentLeague.currentBids[currentLeague.currentBids.length - 1]
+            .userId,
+          {
+            $inc: {
+              'profile.draftMoney': -1 *
+                currentLeague.currentBids[currentLeague.currentBids.length - 1]
+                  .value,
+            },
+            $push: {
+              'profile.team.players': {
+                playerName: currentLeague.currentPlayerUpForBidId,
+                boughtFor: currentLeague.currentBids[
+                  currentLeague.currentBids.length - 1
+                ].value,
+              },
+            },
           },
-          $push: {
-            'profile.team.players': {
-              playerName: currentLeague.currentPlayerUpForBidId,
-              boughtFor: currentLeague.currentBids[currentLeague.currentBids.length - 1].value
-
-            }
-          }
-        });
+        );
 
         // If user's team is full, remove them.
-        if(Meteor.users.findOne(currentLeague.currentBids[currentLeague.currentBids.length - 1].userId).profile.team.players.length >= currentLeague.maxTeamSize) {
-          var nomUserOrder = _.without(currentLeague.userTurnOrder, currentLeague.currentBids[currentLeague.currentBids.length - 1].userId);
+        if (
+          Meteor.users.findOne(
+            currentLeague.currentBids[currentLeague.currentBids.length - 1]
+              .userId,
+          ).profile.team.players.length >= currentLeague.maxTeamSize
+        ) {
+          const nomUserOrder = _.without(
+            currentLeague.userTurnOrder,
+            currentLeague.currentBids[currentLeague.currentBids.length - 1]
+              .userId,
+          );
 
-          if( nomUserOrder.length === 0 ) {
+          if (nomUserOrder.length === 0) {
             currentLeague.set('isDraftDone', true);
             currentLeague.save();
             return true;
@@ -221,20 +275,34 @@ Meteor.methods({
           currentLeague.set('didNominateOnTime', false);
           currentLeague.set('currentBids', []);
           currentLeague.set('currentPlayerUpForBidId', '');
-          currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
-          currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex) % currentLeague.userTurnOrder.length - 1 ); // DIFFERENCE HERE
+          currentLeague.set(
+            'currentNominationClock',
+            currentLeague.startTimeBetweenNomination,
+          );
+          currentLeague.set(
+            'currentUserTurnIndex',
+            currentLeague.currentUserTurnIndex %
+              currentLeague.userTurnOrder.length -
+              1,
+          ); // DIFFERENCE HERE
           currentLeague.save();
         } else {
           currentLeague.set('didNominateOnTime', false);
           currentLeague.set('currentBids', []);
           currentLeague.set('currentPlayerUpForBidId', '');
-          currentLeague.set('currentNominationClock', currentLeague.startTimeBetweenNomination);
-          currentLeague.set('currentUserTurnIndex', (currentLeague.currentUserTurnIndex + 1) % currentLeague.userTurnOrder.length ); // DIFFERENCE HERE
+          currentLeague.set(
+            'currentNominationClock',
+            currentLeague.startTimeBetweenNomination,
+          );
+          currentLeague.set(
+            'currentUserTurnIndex',
+            (currentLeague.currentUserTurnIndex + 1) %
+              currentLeague.userTurnOrder.length,
+          ); // DIFFERENCE HERE
           currentLeague.save();
         }
 
         Meteor.call('kickOffNomination', leagueId);
-
       } else {
         currentLeague.inc('currentBidClock', -1);
         currentLeague.save();
@@ -242,6 +310,5 @@ Meteor.methods({
     }, 1000);
 
     return true;
-  }
-
+  },
 });

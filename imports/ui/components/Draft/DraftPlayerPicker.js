@@ -31,7 +31,7 @@ class DraftPlayerPicker extends Component {
       'nominatePlayer',
       this.state.playerName.trim(),
       League.findOne()._id,
-      Meteor.userId()
+      Meteor.userId(),
     );
 
     // Reset form
@@ -41,9 +41,14 @@ class DraftPlayerPicker extends Component {
   }
 
   render() {
-    if( this.props.currentLeague.userTurnOrder.length === 0 ||
-        this.props.currentUser._id !== this.props.currentLeague.userTurnOrder[this.props.currentLeague.currentUserTurnIndex] ||
-        this.props.currentLeague.currentPlayerUpForBidId !== "" ) {
+    if (
+      this.props.currentLeague.userTurnOrder.length === 0 ||
+      this.props.currentUser._id !==
+        this.props.currentLeague.userTurnOrder[
+          this.props.currentLeague.currentUserTurnIndex
+        ] ||
+      this.props.currentLeague.currentPlayerUpForBidId !== ''
+    ) {
       return null;
     }
 
@@ -51,12 +56,18 @@ class DraftPlayerPicker extends Component {
       <form className="playerNameForm" onSubmit={this.onSubmit}>
         <div className="form-group">
           <label htmlFor="playerName">Player Name</label>
-          <input type="text" id="playerName" className="form-control" value={this.state.playerName} onChange={this.changePlayerName}/>
+          <input
+            type="text"
+            id="playerName"
+            className="form-control"
+            value={this.state.playerName}
+            onChange={this.changePlayerName}
+          />
         </div>
         <button type="submit" className="btn btn-primary">Nominate!</button>
       </form>
     );
   }
-};
+}
 
 export default DraftPlayerPicker;

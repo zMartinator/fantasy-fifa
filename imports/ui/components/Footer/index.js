@@ -1,10 +1,12 @@
 import React from 'react';
 
 const Footer = () => (
-  <div style={{
-    paddingLeft: '15px',
-  }}>
-    &copy; Ben Diuguid 2017
+  <div
+    style={{
+      paddingLeft: '15px',
+    }}
+  >
+    © Ben Diuguid 2017
   </div>
 );
 
