@@ -27,12 +27,13 @@ class Draft extends Component {
 
   render() {
     const {
-      subsLoading,
+      loading,
       currentLeague,
       currentUser,
       currentLeagueUsers,
     } = this.props;
-    return subsLoading
+
+    return loading
       ? <h3 className="text-center">
           Loading...
         </h3>
@@ -76,10 +77,18 @@ export default createContainer(({ match }) => {
   const handle = Meteor.subscribe('league', match.params.leagueId);
   const usersHandle = Meteor.subscribe('usersInLeague', match.params.leagueId);
 
+  const loading = !handle.ready() && !usersHandle.ready();
+  const currentLeague = League.findOne();
+  const currentUser = Meteor.user();
+  const currentLeagueUsers = Meteor.users
+    .find()
+    .fetch()
+    .filter(u => currentLeague.usersInLeague.includes(u._id));
+
   return {
-    subsLoading: !handle.ready(),
-    currentUser: Meteor.user(),
-    currentLeague: League.findOne(),
-    currentLeagueUsers: Meteor.users.find().fetch(),
+    loading,
+    currentUser,
+    currentLeague,
+    currentLeagueUsers,
   };
 }, Draft);
