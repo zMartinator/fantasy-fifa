@@ -1,27 +1,26 @@
 import React from 'react';
 
-const DraftBoardUserItem = props =>
-  (console.log(props), (
+const DraftBoardUserItem = ({ user }) => (
+  <div>
     <div>
-      <div>
-        <h4><strong> {props.user.username} </strong></h4>
-        {' '}
-        Money:
-        {' '}
-        <strong>{props.user.profile.draftMoney}</strong>
-      </div>
-      {props.user.profile.team.players.map((player, index) => (
-        <div key={index}>
-          {' '}
-          <strong>{player.playerName}</strong>
-          {' '}
-          | bought for
-          {' '}
-          <strong>{player.boughtFor}</strong>
-          {' '}
-        </div>
-      ))}
+      <h4><strong> {user.username} </strong></h4>
+      {' '}
+      Money:
+      {' '}
+      <strong>{user.profile.draftMoney}</strong>
     </div>
-  ));
+    {user.profile.team.players.map((player, index) => (
+      <div key={index}>
+        {' '}
+        <strong>{player.playerName}</strong>
+        {' '}
+        | bought for
+        {' '}
+        <strong>{player.boughtFor}</strong>
+        {' '}
+      </div>
+    ))}
+  </div>
+);
 
 export default DraftBoardUserItem;

@@ -251,22 +251,32 @@ Meteor.methods({
           User.findOne(highestBid.userId).profile.team.players.length >=
           currentLeague.maxTeamSize
         ) {
-          const nomUserOrder = currentLeague.userTurnOrder.filter(
-            userId => userId !== highestBid.userId,
+          const userToRemove = _.findIndex(
+            currentLeague.userTurnOrder,
+            id => id === highestBid.userId,
           );
 
-          currentLeague.userTurnOrder = nomUserOrder;
+          currentLeague.userTurnOrder = [
+            ...currentLeague.userTurnOrder.slice(0, userToRemove),
+            ...currentLeague.userTurnOrder.slice(userToRemove + 1),
+          ];
 
-          if (nomUserOrder.length === 0) {
+          if (currentLeague.userTurnOrder.length === 0) {
             currentLeague.isDraftDone = true;
             currentLeague.save();
             return true;
           }
 
-          currentLeague.currentUserTurnIndex =
-            currentLeague.currentUserTurnIndex %
-              currentLeague.userTurnOrder.length -
-            1;
+          if (currentLeague.currentUserTurnIndex < userToRemove) {
+            currentLeague.currentUserTurnIndex =
+              (currentLeague.currentUserTurnIndex + 1) %
+              currentLeague.userTurnOrder.length;
+          } else if (userToRemove === currentLeague.userTurnOrder.length + 1) {
+            currentLeague.currentUserTurnIndex = 0;
+          } else {
+            currentLeague.currentUserTurnIndex %=
+              currentLeague.userTurnOrder.length;
+          }
         } else {
           currentLeague.currentUserTurnIndex =
             (currentLeague.currentUserTurnIndex + 1) %
