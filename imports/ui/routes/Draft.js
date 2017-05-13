@@ -45,8 +45,10 @@ class Draft extends Component {
             }}
           >
             <p>
-              {currentLeague.isDraftDone
-                ? 'Draft Done! We did it!'
+              {currentLeague.hasDraftStarted
+                ? currentLeague.isDraftDone
+                    ? 'Draft Done! We did it!'
+                    : 'Draft Underway!'
                 : 'Awaiting league creator to start'}
             </p>
             <DraftStartButton

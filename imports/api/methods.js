@@ -91,6 +91,7 @@ Meteor.methods({
     createdLeague.startTimeBetweenNomination = formTimeBetweenNomination;
     createdLeague.startBidTime = formBidTime;
     createdLeague.isDraftDone = false;
+    createdLeague.hasDraftStarted = false;
     createdLeague.userTurnOrder = [];
     createdLeague.currentUserTurnIndex = 0;
     createdLeague.currentBidClock = 0;
@@ -113,6 +114,7 @@ Meteor.methods({
     currentLeague.currentNominationClock =
       currentLeague.startTimeBetweenNomination;
     currentLeague.isDraftDone = false;
+    currentLeague.hasDraftStarted = true;
     currentLeague.userTurnOrder = _.shuffle(currentLeague.usersInLeague);
 
     currentLeague.save();

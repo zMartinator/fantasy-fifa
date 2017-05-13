@@ -27,6 +27,7 @@ const League = Class.create({
     startBidTime: Number,
 
     isDraftDone: Boolean,
+    hasDraftStarted: Boolean,
     userTurnOrder: [String],
     currentUserTurnIndex: Number,
     currentBidClock: Number,

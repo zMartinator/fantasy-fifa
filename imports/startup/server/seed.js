@@ -46,6 +46,7 @@ Meteor.startup(() => {
         startBidTime: 10,
 
         isDraftDone: false,
+        hasDraftStarted: false,
         userTurnOrder: [],
         currentUserTurnIndex: 0,
         currentBidClock: 0,

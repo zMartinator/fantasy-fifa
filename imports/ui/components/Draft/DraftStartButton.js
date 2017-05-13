@@ -19,7 +19,7 @@ class DraftStartButton extends Component {
     }
 
     if (
-      this.props.currentLeague.isDraftDone === false &&
+      !this.props.currentLeague.hasDraftStarted &&
       this.props.currentUser._id === this.props.currentLeague.leagueCreator
     ) {
       return (
