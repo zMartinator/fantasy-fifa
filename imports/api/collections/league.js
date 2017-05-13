@@ -37,4 +37,4 @@ const League = Class.create({
   },
 });
 
-export { Leagues, League };
+export default League;

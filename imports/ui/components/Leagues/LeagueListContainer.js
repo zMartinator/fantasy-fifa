@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Leagues } from '../../../api/collections';
+import { League } from '../../../api/collections';
 import LeagueItem from './LeagueItem';
 
 const LeagueListContainer = props =>
@@ -19,6 +19,6 @@ export default createContainer(() => {
   return {
     user: Meteor.user(),
     leagueListLoading: !handle.ready(),
-    leagueList: Leagues.find().fetch(),
+    leagueList: League.find().fetch(),
   };
 }, LeagueListContainer);

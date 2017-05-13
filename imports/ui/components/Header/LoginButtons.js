@@ -58,6 +58,13 @@ class LoginButtons extends Component {
       {
         username: this.state.username,
         password: this.state.password,
+        profile: {
+          team: {
+            name: 'teamName',
+            players: [],
+          },
+          draftMoney: 100,
+        },
       },
       err => {
         if (err) {

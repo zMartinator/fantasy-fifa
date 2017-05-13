@@ -21,7 +21,6 @@ class Draft extends Component {
       this.props.currentLeague.currentBids[
         this.props.currentLeague.currentBids.length - 1
       ].value + 1,
-      Meteor.userId(),
     );
   }
 

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
-import { Leagues, Players } from '../../api/collections';
+import { League, Player } from '../../api/collections';
 import importData from '../../utils/importData';
 
 Meteor.startup(() => {
@@ -9,18 +9,32 @@ Meteor.startup(() => {
       username: 'WALT',
       email: 'walt@walt.com',
       password: 'password',
+      profile: {
+        team: {
+          name: 'teamName',
+          players: [],
+        },
+        draftMoney: 100,
+      },
     });
 
     const userId2 = Accounts.createUser({
       username: 'BEN',
       email: 'ben@ben.com',
       password: 'password',
+      profile: {
+        team: {
+          name: 'teamName',
+          players: [],
+        },
+        draftMoney: 100,
+      },
     });
 
     console.log('Seeded users');
 
-    if (Leagues.find().count() === 0) {
-      Leagues.insert({
+    if (League.find().count() === 0) {
+      const league = new League({
         usersInLeague: [userId, userId2],
         leagueCreator: userId,
 
@@ -31,7 +45,7 @@ Meteor.startup(() => {
         startTimeBetweenNomination: 10,
         startBidTime: 10,
 
-        isDraftDone: null,
+        isDraftDone: false,
         userTurnOrder: [],
         currentUserTurnIndex: 0,
         currentBidClock: 0,
@@ -41,12 +55,13 @@ Meteor.startup(() => {
 
         didNominateOnTime: false,
       });
+      league.save();
 
       console.log('Seeded leagues');
     }
   }
 
-  if (Players.find().count() === 0) {
+  if (Player.find().count() === 0) {
     importData();
 
     console.log('Seeded players');

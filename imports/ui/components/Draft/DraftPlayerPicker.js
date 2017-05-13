@@ -31,7 +31,6 @@ class DraftPlayerPicker extends Component {
       'nominatePlayer',
       this.state.playerName.trim(),
       League.findOne()._id,
-      Meteor.userId(),
     );
 
     // Reset form

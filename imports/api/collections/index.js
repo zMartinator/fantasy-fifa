@@ -1,4 +1,5 @@
-import { Leagues, League } from './leagues';
-import Players from './players';
+import League from './league';
+import Player from './player';
+import User from './user';
 
-export { Leagues, League, Players };
+export { League, Player, User };

@@ -1,5 +1,5 @@
 import { HTTP } from 'meteor/http';
-import { Players } from '../api/collections';
+import { Player } from '../api/collections';
 
 const url =
   'https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=';
@@ -30,7 +30,7 @@ const importData = () => {
     }
 
     players.forEach(player => {
-      Players.insert(player);
+      Player.insert(player);
     });
   } catch (e) {
     console.error(e);

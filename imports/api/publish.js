@@ -1,19 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { Players, Leagues } from './collections';
+import { Player, League } from './collections';
 
 Meteor.publish('leagues', function() {
-  return Leagues.find();
+  return League.find();
 });
 
 Meteor.publish('league', function(leagueId) {
   check(leagueId, String);
-  return Leagues.find(leagueId);
+  return League.find(leagueId);
 });
 
 Meteor.publish('usersInLeague', function(leagueId) {
   check(leagueId, String);
-  const currentLeague = Leagues.findOne(leagueId);
+  const currentLeague = League.findOne(leagueId);
   if (currentLeague) {
     const userIds = currentLeague.usersInLeague;
 
@@ -24,7 +24,7 @@ Meteor.publish('usersInLeague', function(leagueId) {
 });
 
 Meteor.publish('players', function() {
-  return Players.find();
+  return Player.find();
 });
 
 Meteor.publish('onePlayer', function() {
@@ -190,5 +190,5 @@ Meteor.publish('onePlayer', function() {
     baseId: 20801,
     rating: 94,
   };
-  return Players.find({}, { limit: 1 });
+  return Player.find({}, { limit: 1 });
 });

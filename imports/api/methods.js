@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
-import { League } from './collections';
-import { _ } from 'meteor/underscore';
+import _ from 'lodash';
+import { League, User } from './collections';
+import maxBid from '../utils/maxBid';
 
 Meteor.methods({
   registerUserForLeague(leagueId, userId) {
@@ -32,42 +33,42 @@ Meteor.methods({
   ) {
     check(
       formLeagueName,
-      Match.Where(function(name) {
+      Match.Where(name => {
         check(name, String);
         return name.length > 0 && name.length < 31;
       }),
     );
     check(
       formLeagueUserSize,
-      Match.Where(function(leagueSize) {
+      Match.Where(leagueSize => {
         check(leagueSize, Number);
         return leagueSize >= 2 && leagueSize < 128;
       }),
     );
     check(
       formMaxTeamSize,
-      Match.Where(function(maxTeamSize) {
+      Match.Where(maxTeamSize => {
         check(maxTeamSize, Number);
         return maxTeamSize > 0 && maxTeamSize < 100;
       }),
     );
     check(
       formAuctionStartingMoney,
-      Match.Where(function(startingMoney) {
+      Match.Where(startingMoney => {
         check(startingMoney, Number);
         return startingMoney >= formMaxTeamSize;
       }),
     );
     check(
       formTimeBetweenNomination,
-      Match.Where(function(time) {
+      Match.Where(time => {
         check(time, Number);
         return time >= 2;
       }),
     );
     check(
       formBidTime,
-      Match.Where(function(time) {
+      Match.Where(time => {
         check(time, Number);
         return time >= 2;
       }),
@@ -81,22 +82,22 @@ Meteor.methods({
     }
 
     const createdLeague = new League();
-    createdLeague.set('usersInLeague', [Meteor.userId()]);
-    createdLeague.set('leagueCreator', Meteor.userId());
-    createdLeague.set('name', formLeagueName);
-    createdLeague.set('maxLeagueSize', formLeagueUserSize);
-    createdLeague.set('maxTeamSize', formMaxTeamSize);
-    createdLeague.set('auctionStartingMoney', formAuctionStartingMoney);
-    createdLeague.set('startTimeBetweenNomination', formTimeBetweenNomination);
-    createdLeague.set('startBidTime', formBidTime);
-    createdLeague.set('isDraftDone', false);
-    createdLeague.set('userTurnOrder', []);
-    createdLeague.set('currentUserTurnIndex', 0);
-    createdLeague.set('currentBidClock', 0);
-    createdLeague.set('currentNominationClock', 0);
-    createdLeague.set('currentPlayerUpForBidId', '');
-    createdLeague.set('currentBids', []);
-    createdLeague.set('didNominateOnTime', false);
+    createdLeague.usersInLeague = [Meteor.userId()];
+    createdLeague.leagueCreator = Meteor.userId();
+    createdLeague.name = formLeagueName;
+    createdLeague.maxLeagueSize = formLeagueUserSize;
+    createdLeague.maxTeamSize = formMaxTeamSize;
+    createdLeague.auctionStartingMoney = formAuctionStartingMoney;
+    createdLeague.startTimeBetweenNomination = formTimeBetweenNomination;
+    createdLeague.startBidTime = formBidTime;
+    createdLeague.isDraftDone = false;
+    createdLeague.userTurnOrder = [];
+    createdLeague.currentUserTurnIndex = 0;
+    createdLeague.currentBidClock = 0;
+    createdLeague.currentNominationClock = 0;
+    createdLeague.currentPlayerUpForBidId = '';
+    createdLeague.currentBids = [];
+    createdLeague.didNominateOnTime = false;
 
     createdLeague.save();
   },
@@ -108,13 +109,11 @@ Meteor.methods({
     // TODO: Set all users money in League to starting amount.
     // TODO: change the limit for the league to the current League Size.
 
-    currentLeague.set('didNominateOnTime', false);
-    currentLeague.set(
-      'currentNominationClock',
-      currentLeague.startTimeBetweenNomination,
-    );
-    currentLeague.set('isDraftDone', false);
-    currentLeague.set('userTurnOrder', _.shuffle(currentLeague.usersInLeague));
+    currentLeague.didNominateOnTime = false;
+    currentLeague.currentNominationClock =
+      currentLeague.startTimeBetweenNomination;
+    currentLeague.isDraftDone = false;
+    currentLeague.userTurnOrder = _.shuffle(currentLeague.usersInLeague);
 
     currentLeague.save();
 
@@ -123,10 +122,11 @@ Meteor.methods({
     return true;
   },
 
-  nominatePlayer(playerName, leagueId, userId) {
+  nominatePlayer(playerName, leagueId) {
+    // TODO: Change this to playerId
     check(playerName, String);
     check(leagueId, String);
-    check(userId, String);
+    const userId = Meteor.userId();
 
     if (!userId) {
       throw new Meteor.Error(
@@ -136,8 +136,9 @@ Meteor.methods({
     }
 
     // TODO: Check that player is available still.
+    // if isn't return false immediately
+
     const currentLeague = League.findOne(leagueId);
-    const currentUser = Meteor.users.findOne(userId);
 
     if (
       userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex]
@@ -145,14 +146,14 @@ Meteor.methods({
       throw new Meteor.Error('out-of-turn', 'It is not your turn to nominate');
     }
 
-    currentLeague.set('currentNominationClock', 0);
-    currentLeague.set('currentPlayerUpForBidId', playerName);
-    currentLeague.set('currentBidClock', currentLeague.startBidTime);
-    currentLeague.set('didNominateOnTime', true);
+    currentLeague.currentNominationClock = 0;
+    currentLeague.currentPlayerUpForBidId = playerName;
+    currentLeague.currentBidClock = currentLeague.startBidTime;
+    currentLeague.didNominateOnTime = true;
     currentLeague.currentBids.push({
       value: 1,
       userId,
-      username: currentUser.username,
+      username: Meteor.user().username,
     });
 
     currentLeague.save();
@@ -162,22 +163,24 @@ Meteor.methods({
     return true;
   },
 
-  bidOnPlayer(leagueId, bidAmount, userId) {
+  bidOnPlayer(leagueId, bidAmount) {
     check(leagueId, String);
     check(bidAmount, Number);
-    check(userId, String);
+    const currentUser = Meteor.user();
+    const userId = currentUser._id;
     const currentLeague = League.findOne(leagueId);
-    const currentUser = Meteor.users.findOne(userId);
+    const highestBid =
+      currentLeague.currentBids[currentLeague.currentBids.length - 1];
 
-    // TODO: check if bidAmount is > maxBid and if it is return false.
-    if (
-      bidAmount <=
-      currentLeague.currentBids[currentLeague.currentBids.length - 1].value
-    ) {
+    if (bidAmount > maxBid(currentUser, currentLeague)) {
       return false;
     }
 
-    currentLeague.set('currentBidClock', currentLeague.startBidTime);
+    if (bidAmount <= highestBid.value) {
+      return false;
+    }
+
+    currentLeague.currentBidClock = currentLeague.startBidTime;
     currentLeague.currentBids.push({
       value: bidAmount,
       userId,
@@ -199,20 +202,16 @@ Meteor.methods({
         !currentLeague.didNominateOnTime
       ) {
         // SKIP CONDITION
-        currentLeague.set(
-          'currentNominationClock',
-          currentLeague.startTimeBetweenNomination,
-        );
-        currentLeague.set(
-          'currentUserTurnIndex',
+        currentLeague.currentNominationClock =
+          currentLeague.startTimeBetweenNomination;
+        currentLeague.currentUserTurnIndex =
           (currentLeague.currentUserTurnIndex + 1) %
-            currentLeague.userTurnOrder.length,
-        );
+          currentLeague.userTurnOrder.length;
         currentLeague.save();
       } else if (currentLeague.didNominateOnTime) {
         Meteor.clearInterval(intervalId);
       } else {
-        currentLeague.inc('currentNominationClock', -1);
+        currentLeague.currentNominationClock -= 1;
         currentLeague.save();
       }
     }, 1000);
@@ -221,90 +220,65 @@ Meteor.methods({
   },
 
   kickOffBidding(leagueId, playerName) {
+    // TODO: convert to playerId
     check(leagueId, String);
     check(playerName, String);
 
     const intervalId = Meteor.setInterval(() => {
       const currentLeague = League.findOne(leagueId);
 
+      const highestBid =
+        currentLeague.currentBids[currentLeague.currentBids.length - 1];
+
       if (currentLeague.currentBidClock <= 0) {
         Meteor.clearInterval(intervalId);
-        // TODO: convert Meteor.users to Astronomy?!
-        Meteor.users.update(
-          currentLeague.currentBids[currentLeague.currentBids.length - 1]
-            .userId,
-          {
-            $inc: {
-              'profile.draftMoney': -1 *
-                currentLeague.currentBids[currentLeague.currentBids.length - 1]
-                  .value,
-            },
-            $push: {
-              'profile.team.players': {
-                playerName: currentLeague.currentPlayerUpForBidId,
-                boughtFor: currentLeague.currentBids[
-                  currentLeague.currentBids.length - 1
-                ].value,
-              },
-            },
-          },
-        );
+        const user = User.findOne(highestBid.userId);
+        user.profile.draftMoney -= highestBid.value;
+        user.profile.team.players.push({
+          playerName: currentLeague.currentPlayerUpForBidId,
+          boughtFor: highestBid.value,
+        });
+        user.save();
+
+        currentLeague.didNominateOnTime = false;
+        currentLeague.currentBids = [];
+        currentLeague.currentPlayerUpForBidId = '';
+        currentLeague.currentNominationClock =
+          currentLeague.startTimeBetweenNomination;
 
         // If user's team is full, remove them.
         if (
-          Meteor.users.findOne(
-            currentLeague.currentBids[currentLeague.currentBids.length - 1]
-              .userId,
-          ).profile.team.players.length >= currentLeague.maxTeamSize
+          User.findOne(highestBid.userId).profile.team.players.length >=
+          currentLeague.maxTeamSize
         ) {
-          const nomUserOrder = _.without(
-            currentLeague.userTurnOrder,
-            currentLeague.currentBids[currentLeague.currentBids.length - 1]
-              .userId,
+          const nomUserOrder = currentLeague.userTurnOrder.filter(
+            userId => userId !== highestBid.userId,
           );
+
+          currentLeague.userTurnOrder = nomUserOrder;
 
           if (nomUserOrder.length === 0) {
-            currentLeague.set('isDraftDone', true);
+            currentLeague.isDraftDone = true;
             currentLeague.save();
             return true;
-          } else {
-            currentLeague.set('userTurnOrder', nomUserOrder);
-            currentLeague.save(); // TODO: remove this? save once at end if possible.
           }
 
-          currentLeague.set('didNominateOnTime', false);
-          currentLeague.set('currentBids', []);
-          currentLeague.set('currentPlayerUpForBidId', '');
-          currentLeague.set(
-            'currentNominationClock',
-            currentLeague.startTimeBetweenNomination,
-          );
-          currentLeague.set(
-            'currentUserTurnIndex',
+          currentLeague.currentUserTurnIndex =
             currentLeague.currentUserTurnIndex %
               currentLeague.userTurnOrder.length -
-              1,
-          ); // DIFFERENCE HERE
-          currentLeague.save();
+            1;
         } else {
-          currentLeague.set('didNominateOnTime', false);
-          currentLeague.set('currentBids', []);
-          currentLeague.set('currentPlayerUpForBidId', '');
-          currentLeague.set(
-            'currentNominationClock',
-            currentLeague.startTimeBetweenNomination,
-          );
-          currentLeague.set(
-            'currentUserTurnIndex',
+          currentLeague.currentUserTurnIndex =
             (currentLeague.currentUserTurnIndex + 1) %
-              currentLeague.userTurnOrder.length,
-          ); // DIFFERENCE HERE
-          currentLeague.save();
+            currentLeague.userTurnOrder.length;
         }
+
+        currentLeague.save();
 
         Meteor.call('kickOffNomination', leagueId);
       } else {
-        currentLeague.inc('currentBidClock', -1);
+        // Here the countdown are not 0 yet, so simply decrement the clock
+        currentLeague.currentBidClock -= 1;
         currentLeague.save();
       }
     }, 1000);

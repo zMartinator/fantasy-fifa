@@ -18,6 +18,7 @@
     "bcrypt": "^1.0.2",
     "bootstrap": "^3.3.7",
     "bootstrap-material-design": "^0.5.10",
+    "lodash": "^4.17.4",
     "meteor-node-stubs": "^0.2.6",
     "moment": "^2.18.1",
     "react": "^15.5.4",

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Players } from '../../api/collections';
+import { Player as Players } from '../../api/collections';
 import Player from '../components/Player/Player';
 
 const About = ({ loading, players }) =>
