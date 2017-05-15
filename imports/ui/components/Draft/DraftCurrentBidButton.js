@@ -1,20 +1,18 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import { createContainer } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import { League } from '../../../api/collections';
 import maxBid from '../../../utils/maxBid';
 
-const DraftCurrentBidButton = ({
-  currentUser,
-  currentLeague,
-  currentBid,
-  handleBidCallback,
-}) => {
-  if (!currentUser) {
+const DraftCurrentBidButton = ({ user, league, bid, handleBid }) => {
+  if (!user) {
     return (
       <Button bsStyle="warning" block disabled>You Must Log In First</Button>
     );
   }
 
-  if (!currentLeague.usersInLeague.includes(currentUser._id)) {
+  if (!league.usersInLeague.includes(user._id)) {
     return (
       <Button bsStyle="warning" block disabled>
         You are not in this draft!
@@ -22,28 +20,28 @@ const DraftCurrentBidButton = ({
     );
   }
 
-  if (currentLeague.isDraftDone === true) {
+  if (league.isDraftDone === true) {
     return <Button bsStyle="success" block disabled>Draft Over</Button>;
   }
 
-  if (currentBid.userId === currentUser._id) {
+  if (bid.userId === user._id) {
     return (
       <Button bsStyle="success" block disabled>You are highest bidder</Button>
     );
   }
 
-  if (currentUser.profile.team.players.length === currentLeague.maxTeamSize) {
+  if (user.profile.team.players.length === league.maxTeamSize) {
     return <Button bsStyle="success" block disabled>Your Team is Full</Button>;
   }
 
-  if (currentBid.value >= maxBid(currentUser, currentLeague)) {
+  if (bid.value >= maxBid(user, league)) {
     return <Button bsStyle="warning" block disabled>Above your max bid</Button>;
   }
 
-  if (currentLeague.currentPlayerUpForBidId !== '') {
+  if (league.currentPlayerUpForBidId !== '') {
     return (
-      <Button bsStyle="primary" block onClick={handleBidCallback}>
-        Bid {currentBid.value + 1}
+      <Button bsStyle="primary" block onClick={handleBid}>
+        Bid {bid.value + 1}
       </Button>
     );
   }
@@ -51,4 +49,11 @@ const DraftCurrentBidButton = ({
   return null;
 };
 
-export default DraftCurrentBidButton;
+export default createContainer(
+  (...rest) => ({
+    user: Meteor.user(),
+    league: League.findOne(),
+    ...rest,
+  }),
+  DraftCurrentBidButton,
+);

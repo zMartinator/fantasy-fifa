@@ -1,29 +1,18 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import { createContainer } from 'meteor/react-meteor-data';
+import { League } from '../../../api/collections';
 
 class DraftStartButton extends Component {
-  constructor(props) {
-    super(props);
-
-    this.startDraft = this.startDraft.bind(this);
-  }
-
-  startDraft() {
-    Meteor.call('startDraft', this.props.currentLeague._id);
-  }
+  startDraft = () => {
+    Meteor.call('startDraft', this.props.league._id);
+  };
 
   render() {
-    if (!this.props.currentUser) {
-      return null;
-    }
-
-    if (
-      !this.props.currentLeague.hasDraftStarted &&
-      this.props.currentUser._id === this.props.currentLeague.leagueCreator
-    ) {
-      return (
-        <Button
+    const { user, league } = this.props;
+    return user && !league.hasDraftStarted && user._id === league.leagueCreator
+      ? <Button
           bsSize="large"
           bsStyle="success"
           block
@@ -31,11 +20,14 @@ class DraftStartButton extends Component {
         >
           Start Draft
         </Button>
-      );
-    }
-
-    return null;
+      : null;
   }
 }
 
-export default DraftStartButton;
+export default createContainer(
+  () => ({
+    user: Meteor.user(),
+    league: League.findOne(),
+  }),
+  DraftStartButton,
+);

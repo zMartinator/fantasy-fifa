@@ -33,7 +33,7 @@ const User = Class.create({
             name: 'defaultTeamName',
             players: [],
           },
-          draftMoney: 100, // TODO: hardcoded to 100
+          draftMoney: 100,
         };
       },
     },

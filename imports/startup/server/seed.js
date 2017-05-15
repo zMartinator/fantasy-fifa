@@ -55,6 +55,7 @@ Meteor.startup(() => {
         currentBids: [],
 
         didNominateOnTime: false,
+        playersDrafted: [],
       });
       league.save();
 

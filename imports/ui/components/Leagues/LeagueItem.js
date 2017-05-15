@@ -1,26 +1,20 @@
 import { Meteor } from 'meteor/meteor';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { createContainer } from 'meteor/react-meteor-data';
 import LeagueJoinButton from './LeagueJoinButton';
 
 class LeagueItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleJoinLeague = this.handleJoinLeague.bind(this);
-  }
-
-  handleJoinLeague() {
-    Meteor.call(
-      'registerUserForLeague',
-      this.props.leagueInfo._id,
-      this.props.user._id,
-    );
-  }
+  handleJoinLeague = () => {
+    const { league, user } = this.props;
+    Meteor.call('registerUserForLeague', league._id, user._id);
+  };
 
   render() {
-    const isAlreadyInLeague = this.props.user
-      ? this.props.leagueInfo.usersInLeague.includes(this.props.user._id)
+    const { league, user } = this.props;
+
+    const isAlreadyInLeague = user
+      ? league.usersInLeague.includes(user._id)
       : false;
 
     return (
@@ -37,8 +31,8 @@ class LeagueItem extends Component {
           }}
         >
           <h4>
-            <Link to={`/draft/${this.props.leagueInfo._id}`}>
-              {' '}{this.props.leagueInfo.name}{' '}
+            <Link to={`/draft/${league._id}`}>
+              {' '}{league.name}{' '}
             </Link>
           </h4>
         </div>
@@ -49,9 +43,9 @@ class LeagueItem extends Component {
           }}
         >
           <p style={{ margin: '0' }}>
-            {this.props.leagueInfo.usersInLeague.length}
+            {league.usersInLeague.length}
             /
-            {this.props.leagueInfo.maxLeagueSize}
+            {league.maxLeagueSize}
             {' '}
             Spots
           </p>
@@ -64,12 +58,9 @@ class LeagueItem extends Component {
         >
           <LeagueJoinButton
             handleClick={this.handleJoinLeague}
-            isLoggedIn={this.props.user}
+            isLoggedIn={user}
             isAlreadyInLeague={isAlreadyInLeague}
-            isFull={
-              this.props.leagueInfo.usersInLeague.length ===
-                this.props.leagueInfo.maxLeagueSize
-            }
+            isFull={league.usersInLeague.length === league.maxLeagueSize}
           />
         </div>
       </div>
@@ -77,4 +68,10 @@ class LeagueItem extends Component {
   }
 }
 
-export default LeagueItem;
+export default createContainer(
+  (...rest) => ({
+    user: Meteor.user(),
+    ...rest,
+  }),
+  LeagueItem,
+);

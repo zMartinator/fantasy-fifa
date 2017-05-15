@@ -1,10 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
 import _ from 'lodash';
-import { League, User } from './collections';
+import { League, User, Player } from './collections';
 import maxBid from '../utils/maxBid';
 
 Meteor.methods({
+  getLeagues() {
+    return League.find({}, { reactive: false }).fetch();
+  },
   registerUserForLeague(leagueId, userId) {
     check(leagueId, String);
     check(userId, String);
@@ -99,6 +102,7 @@ Meteor.methods({
     createdLeague.currentPlayerUpForBidId = '';
     createdLeague.currentBids = [];
     createdLeague.didNominateOnTime = false;
+    createdLeague.playersDrafted = [];
 
     createdLeague.save();
   },
@@ -107,9 +111,13 @@ Meteor.methods({
     check(leagueId, String);
     const currentLeague = League.findOne(leagueId);
 
-    // TODO: Set all users money in League to starting amount.
-    // TODO: change the limit for the league to the current League Size.
-
+    // This might not appear in the UI immediately, may need to refresh?
+    currentLeague.usersInLeague.forEach(userId => {
+      const user = User.findOne(userId);
+      user.profile.draftMoney = currentLeague.auctionStartingMoney;
+      user.save();
+    });
+    currentLeague.maxLeagueSize = currentLeague.usersInLeague.length;
     currentLeague.didNominateOnTime = false;
     currentLeague.currentNominationClock =
       currentLeague.startTimeBetweenNomination;
@@ -124,9 +132,8 @@ Meteor.methods({
     return true;
   },
 
-  nominatePlayer(playerName, leagueId) {
-    // TODO: Change this to playerId
-    check(playerName, String);
+  nominatePlayer(playerId, leagueId) {
+    check(playerId, String);
     check(leagueId, String);
     const userId = Meteor.userId();
 
@@ -137,10 +144,11 @@ Meteor.methods({
       );
     }
 
-    // TODO: Check that player is available still.
-    // if isn't return false immediately
-
     const currentLeague = League.findOne(leagueId);
+
+    if (currentLeague.playersDrafted.includes(playerId)) {
+      throw new Meteor.Error('already-happened', 'Player has been drafted');
+    }
 
     if (
       userId !== currentLeague.userTurnOrder[currentLeague.currentUserTurnIndex]
@@ -149,7 +157,7 @@ Meteor.methods({
     }
 
     currentLeague.currentNominationClock = 0;
-    currentLeague.currentPlayerUpForBidId = playerName;
+    currentLeague.currentPlayerUpForBidId = playerId;
     currentLeague.currentBidClock = currentLeague.startBidTime;
     currentLeague.didNominateOnTime = true;
     currentLeague.currentBids.push({
@@ -160,7 +168,7 @@ Meteor.methods({
 
     currentLeague.save();
 
-    Meteor.call('kickOffBidding', leagueId, playerName);
+    Meteor.call('kickOffBidding', leagueId);
 
     return true;
   },
@@ -221,10 +229,8 @@ Meteor.methods({
     return true;
   },
 
-  kickOffBidding(leagueId, playerName) {
-    // TODO: convert to playerId
+  kickOffBidding(leagueId) {
     check(leagueId, String);
-    check(playerName, String);
 
     const intervalId = Meteor.setInterval(() => {
       const currentLeague = League.findOne(leagueId);
@@ -237,11 +243,14 @@ Meteor.methods({
         const user = User.findOne(highestBid.userId);
         user.profile.draftMoney -= highestBid.value;
         user.profile.team.players.push({
-          playerName: currentLeague.currentPlayerUpForBidId,
+          playerId: currentLeague.currentPlayerUpForBidId,
           boughtFor: highestBid.value,
         });
         user.save();
 
+        currentLeague.playersDrafted.push(
+          currentLeague.currentPlayerUpForBidId,
+        );
         currentLeague.didNominateOnTime = false;
         currentLeague.currentBids = [];
         currentLeague.currentPlayerUpForBidId = '';
@@ -296,5 +305,29 @@ Meteor.methods({
     }, 1000);
 
     return true;
+  },
+
+  playerQuery($search) {
+    check($search, String);
+    console.log(`$search: ${$search}`);
+
+    if (!$search) {
+      return [];
+    }
+
+    const players = Player.find(
+      { $text: { $search } },
+      {
+        reactive: false,
+        fields: {
+          score: { $meta: 'textScore' },
+        },
+        sort: {
+          score: { $meta: 'textScore' },
+        },
+      },
+    ).fetch();
+
+    return players;
   },
 });

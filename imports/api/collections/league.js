@@ -35,6 +35,8 @@ const League = Class.create({
     currentPlayerUpForBidId: String,
     currentBids: [Bid],
     didNominateOnTime: Boolean,
+
+    playersDrafted: [String],
   },
 });
 

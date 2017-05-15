@@ -12,7 +12,7 @@ const DraftBoardUserItem = ({ user }) => (
     {user.profile.team.players.map((player, index) => (
       <div key={index}>
         {' '}
-        <strong>{player.playerName}</strong>
+        <strong>{player.playerId}</strong>
         {' '}
         | bought for
         {' '}

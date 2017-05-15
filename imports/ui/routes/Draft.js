@@ -8,29 +8,18 @@ import DraftBoardUserItem from '../components/Draft/DraftBoardUserItem';
 import DraftPlayerPicker from '../components/Draft/DraftPlayerPicker';
 
 class Draft extends Component {
-  constructor(props) {
-    super(props);
+  handleBid = () => {
+    const { league } = this.props;
 
-    this.handleBid = this.handleBid.bind(this);
-  }
-
-  handleBid() {
     Meteor.call(
       'bidOnPlayer',
-      this.props.currentLeague._id,
-      this.props.currentLeague.currentBids[
-        this.props.currentLeague.currentBids.length - 1
-      ].value + 1,
+      league._id,
+      league.currentBids[league.currentBids.length - 1].value + 1,
     );
-  }
+  };
 
   render() {
-    const {
-      loading,
-      currentLeague,
-      currentUser,
-      currentLeagueUsers,
-    } = this.props;
+    const { loading, league, user, leagueUsers } = this.props;
 
     return loading
       ? <h3 className="text-center">
@@ -45,28 +34,18 @@ class Draft extends Component {
             }}
           >
             <p>
-              {currentLeague.hasDraftStarted
-                ? currentLeague.isDraftDone
+              {league.hasDraftStarted
+                ? league.isDraftDone
                     ? 'Draft Done! We did it!'
                     : 'Draft Underway!'
                 : 'Awaiting league creator to start'}
             </p>
-            <DraftStartButton
-              currentUser={currentUser}
-              currentLeague={currentLeague}
-            />
+            <DraftStartButton />
           </div>
-          <DraftCurrentBid
-            handleBidCallback={this.handleBid}
-            currentUser={currentUser}
-            currentLeague={currentLeague}
-          />
-          <DraftPlayerPicker
-            currentUser={currentUser}
-            currentLeague={currentLeague}
-          />
+          <DraftCurrentBid handleBid={this.handleBid} />
+          <DraftPlayerPicker />
           <div>
-            {currentLeagueUsers.map(user => (
+            {leagueUsers.map(user => (
               <DraftBoardUserItem key={user._id} user={user} />
             ))}
           </div>
@@ -76,20 +55,19 @@ class Draft extends Component {
 
 export default createContainer(({ match }) => {
   const handle = Meteor.subscribe('league', match.params.leagueId);
-  const usersHandle = Meteor.subscribe('usersInLeague', match.params.leagueId);
 
-  const loading = !handle.ready() && !usersHandle.ready();
-  const currentLeague = League.findOne();
-  const currentUser = Meteor.user();
-  const currentLeagueUsers = Meteor.users
+  const loading = !handle.ready();
+  const league = League.findOne(match.params.leagueId);
+  const user = Meteor.user();
+  const leagueUsers = Meteor.users
     .find()
     .fetch()
-    .filter(u => currentLeague.usersInLeague.includes(u._id));
+    .filter(u => league.usersInLeague.includes(u._id));
 
   return {
     loading,
-    currentUser,
-    currentLeague,
-    currentLeagueUsers,
+    user,
+    league,
+    leagueUsers,
   };
 }, Draft);

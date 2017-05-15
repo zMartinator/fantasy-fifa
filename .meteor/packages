@@ -22,3 +22,4 @@ jagi:astronomy
 static-html
 react-meteor-data
 http@1.2.12
+reywood:publish-composite

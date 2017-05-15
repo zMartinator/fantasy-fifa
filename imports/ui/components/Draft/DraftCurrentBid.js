@@ -1,29 +1,29 @@
 import React from 'react';
+import { Meteor } from 'meteor/meteor';
+import { createContainer } from 'meteor/react-meteor-data';
 import DraftCurrentBidButton from './DraftCurrentBidButton';
+import Player from '../Player/Player';
+import { League } from '../../../api/collections';
 
-const DraftCurrentBid = props => {
-  const currentBid = props.currentLeague.currentBids.length > 0
-    ? props.currentLeague.currentBids[
-        props.currentLeague.currentBids.length - 1
-      ]
-    : -1;
-
-  const currentPlayerUpForBid = props.currentLeague.currentPlayerUpForBidId !==
-    -1
-    ? props.currentLeague.currentPlayerUpForBidId
-    : 'Waiting For Nomination';
+const DraftCurrentBid = ({ league, user, handleBid }) => {
+  const currentBid = league.currentBids.length > 0
+    ? league.currentBids[league.currentBids.length - 1]
+    : {
+        value: -1,
+        userId: '',
+        username: '',
+      };
 
   return (
     <div>
       <h2>
-        {props.currentLeague.currentNominationClock === 0
-          ? props.currentLeague.currentBidClock
-          : props.currentLeague.currentNominationClock}
+        {league.currentNominationClock === 0
+          ? league.currentBidClock
+          : league.currentNominationClock}
       </h2>
-      {props.currentLeague.currentBidClock !== 0 &&
+      <Player id={league.currentPlayerUpForBidId} />
+      {league.currentBidClock !== 0 &&
         <h4>
-          {currentPlayerUpForBid}
-          {' '}
           for
           {' '}
           {currentBid.value}
@@ -32,14 +32,15 @@ const DraftCurrentBid = props => {
           {' '}
           {currentBid.username}
         </h4>}
-      <DraftCurrentBidButton
-        currentUser={props.currentUser}
-        currentLeague={props.currentLeague}
-        currentBid={currentBid}
-        handleBidCallback={props.handleBidCallback}
-      />
+      <DraftCurrentBidButton bid={currentBid} handleBid={handleBid} />
     </div>
   );
 };
 
-export default DraftCurrentBid;
+export default createContainer(
+  () => ({
+    user: Meteor.user(),
+    league: League.findOne(),
+  }),
+  DraftCurrentBid,
+);
