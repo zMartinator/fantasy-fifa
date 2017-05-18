@@ -1,32 +1,21 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { withState, lifecycle, compose } from 'recompose';
 import LeagueItem from './LeagueItem';
+import spinnerWhileLoading from '../Spinner';
 
-class LeagueListContainer extends Component {
-  state = {
-    leagues: undefined,
-  };
-
-  componentDidMount() {
-    Meteor.call('getLeagues', (err, leagues) => {
-      this.setState({
-        leagues,
+export default compose(
+  withState('leagues'),
+  lifecycle({
+    componentDidMount() {
+      Meteor.call('getLeagues', (err, leagues) => {
+        this.setState({ leagues });
       });
-    });
-  }
-
-  render() {
-    const { leagues } = this.state;
-    return (
-      <div>
-        {leagues
-          ? leagues.map(league => (
-              <LeagueItem key={league._id} league={league} />
-            ))
-          : <div>loading</div>}
-      </div>
-    );
-  }
-}
-
-export default LeagueListContainer;
+    },
+  }),
+  spinnerWhileLoading(props => !props.leagues),
+)(({ leagues }) => (
+  <div>
+    {leagues.map(league => <LeagueItem key={league._id} league={league} />)}
+  </div>
+));

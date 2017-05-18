@@ -1,85 +1,58 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import Select from 'react-select';
+import { compose, withState, withHandlers } from 'recompose';
 import { League, Player } from '../../../api/collections';
 
-class DraftPlayerPicker extends Component {
-  state = {
-    player: undefined,
-  };
-
-  onSelectChange = value => {
-    this.setState({
-      player: value,
+const loadOptions = (input, callback) => {
+  Meteor.call('playerQuery', input, (err, players) => {
+    players.forEach(player => {
+      player.value = player._id;
+      player.label = `${player.rating} - ${player.firstName} ${player.lastName}`;
     });
-  };
-
-  onSubmit = event => {
-    event.preventDefault();
-    const { player } = this.state;
-
-    // Disable submitting nothing.
-    if (!player) {
-      return;
-    }
-
-    Meteor.call('nominatePlayer', player._id, League.findOne()._id);
-
-    // Reset form
-    this.setState({
-      player: undefined,
+    // console.log(players);
+    callback(null, {
+      options: players,
     });
-  };
+  });
+};
 
-  getOptions = (input, callback) => {
-    Meteor.call('playerQuery', input, (err, players) => {
-      players.forEach(player => {
-        player.value = player._id;
-        player.label = `${player.rating} - ${player.firstName} ${player.lastName}`;
-      });
-      console.log(players);
-      callback(null, {
-        options: players,
-      });
-    });
-  };
-
-  // renderOption = (option) => {
-  //   return <div>option:{option.name}</div>;
-  // }
-
-  // renderValue = (option) => {
-  //   return <div>value:{option.name}</div>;
-  // }
-
-  render() {
-    const { league, user } = this.props;
-    if (
-      league.userTurnOrder.length === 0 ||
-      user._id !== league.userTurnOrder[league.currentUserTurnIndex] ||
-      league.currentPlayerUpForBidId !== ''
-    ) {
-      return null;
-    }
-
-    return (
-      <form onSubmit={this.onSubmit}>
+const Picker = ({ league, user, player, onPlayerChange, onSubmit }) =>
+  league.userTurnOrder.length === 0 ||
+    user._id !== league.userTurnOrder[league.currentUserTurnIndex] ||
+    league.currentPlayerUpForBidId !== ''
+    ? null
+    : <form onSubmit={onSubmit}>
         <Select.Async
           name="nominate-player"
-          value={this.state.player}
-          onChange={this.onSelectChange}
+          value={player}
+          onChange={onPlayerChange}
           autoload={false}
           cache={false}
-          loadOptions={this.getOptions}
-          // optionRenderer={this.renderOption}
-          // valueRenderer={this.renderValue}
+          loadOptions={loadOptions}
         />
         <button type="submit" className="btn btn-primary">Nominate!</button>
-      </form>
-    );
-  }
-}
+      </form>;
+
+const EnhancedPicker = compose(
+  withState('player', 'onPlayerChange'),
+  withHandlers({
+    onSubmit: ({ player, onPlayerChange }) => event => {
+      event.preventDefault();
+
+      // Disable submitting nothing.
+      if (!player) {
+        return;
+      }
+
+      Meteor.call('nominatePlayer', player._id, League.findOne()._id);
+
+      // Reset form
+      onPlayerChange(undefined);
+    },
+  }),
+)(Picker);
 
 export default createContainer(
   (...rest) => ({
@@ -87,5 +60,5 @@ export default createContainer(
     league: League.findOne(),
     ...rest,
   }),
-  DraftPlayerPicker,
+  EnhancedPicker,
 );

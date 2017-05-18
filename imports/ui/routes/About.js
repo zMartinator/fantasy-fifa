@@ -21,12 +21,14 @@ const About = ({ loading, players }) =>
         {/*players.map(player => <Player key={player._id} player={player} />)*/}
       </div>;
 
-export default createContainer(() => {
-  const handle = Meteor.subscribe('onePlayer');
+export default About;
 
-  return {
-    loading: !handle.ready(),
-    players: Players.find().fetch(),
-    user: Meteor.user(),
-  };
-}, About);
+// export default createContainer(() => {
+//   const handle = Meteor.subscribe('onePlayer');
+
+//   return {
+//     loading: !handle.ready(),
+//     players: Players.find().fetch(),
+//     user: Meteor.user(),
+//   };
+// }, About);

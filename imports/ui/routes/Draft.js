@@ -57,12 +57,15 @@ export default createContainer(({ match }) => {
   const handle = Meteor.subscribe('league', match.params.leagueId);
 
   const loading = !handle.ready();
-  const league = League.findOne(match.params.leagueId);
+  const league = League.findOne();
+
   const user = Meteor.user();
-  const leagueUsers = Meteor.users
-    .find()
-    .fetch()
-    .filter(u => league.usersInLeague.includes(u._id));
+  const leagueUsers = loading
+    ? null
+    : Meteor.users
+        .find()
+        .fetch()
+        .filter(u => league.usersInLeague.includes(u._id));
 
   return {
     loading,
