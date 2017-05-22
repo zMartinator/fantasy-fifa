@@ -1,153 +1,146 @@
 import { Meteor } from 'meteor/meteor';
-import React, { Component } from 'react';
+import React from 'react';
+import { compose, withState, withHandlers } from 'recompose';
 
-class LeagueCreationForm extends Component {
-  constructor(props) {
-    super(props);
+const Form = ({
+  done,
+  onSubmit,
+  name,
+  onChangeName,
+  userSize,
+  onChangeUserSize,
+  teamSize,
+  onChangeTeamSize,
+  startingMoney,
+  onChangeStartingMoney,
+  nominationTime,
+  onChangeNominationTime,
+  bidTime,
+  onChangeBidTime,
+}) => (
+  <form className="leagueCreationForm" onSubmit={onSubmit}>
+    <div>
+      <label htmlFor="leagueName">League name</label>
+      <input
+        type="text"
+        id="leagueName"
+        value={name}
+        onChange={onChangeName}
+        placeholder="e.g., Romeo Rumble"
+        maxLength="30"
+      />
+    </div>
+    <div>
+      <label htmlFor="leagueUserSize">Max League Size</label>
+      <input
+        type="number"
+        min="2"
+        max="128"
+        step="1"
+        value={userSize}
+        onChange={onChangeUserSize}
+        id="leagueUserSize"
+      />
+    </div>
+    <div>
+      <label htmlFor="maxTeamSize">Max Team Size</label>
+      <input
+        type="number"
+        min="1"
+        max="100"
+        step="1"
+        value={teamSize}
+        onChange={onChangeTeamSize}
+        id="maxTeamSize"
+      />
+    </div>
+    <div>
+      <label htmlFor="auctionStartingMoney">Starting Auction Money</label>
+      <input
+        type="number"
+        min="1"
+        step="1"
+        value={startingMoney}
+        onChange={onChangeStartingMoney}
+        id="auctionStartingMoney"
+      />
+    </div>
+    <div>
+      <label htmlFor="timeBetweenNomination">Time Between Nomination</label>
+      <input
+        type="number"
+        min="5"
+        step="1"
+        value={nominationTime}
+        onChange={onChangeNominationTime}
+        id="timeBetweenNomination"
+      />
+    </div>
+    <div>
+      <label htmlFor="bidTime">Bid Time</label>
+      <input
+        type="number"
+        min="5"
+        step="1"
+        value={bidTime}
+        onChange={onChangeBidTime}
+        id="bidTime"
+      />
+    </div>
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+    <button type="submit" className="btn btn-primary">Submit</button>
+    <button type="button" className="btn btn-default" onClick={done}>
+      Close
+    </button>
+  </form>
+);
 
-  handleSubmit(event) {
-    event.preventDefault();
+const onSubmit = ({
+  done,
+  name,
+  userSize,
+  teamSize,
+  startingMoney,
+  nominationTime,
+  bidTime,
+}) => event => {
+  event.preventDefault();
 
-    const formLeagueName = this.leagueName.value.trim();
-    let formLeagueUserSize = this.leagueUserSize.value;
-    let formMaxTeamSize = this.maxTeamSize.value;
-    let formAuctionStartingMoney = this.auctionStartingMoney.value;
-    let formTimeBetweenNomination = this.timeBetweenNomination.value;
-    let formBidTime = this.bidTime.value;
+  Meteor.call(
+    'CreateLeague',
+    name,
+    userSize,
+    teamSize,
+    startingMoney,
+    nominationTime,
+    bidTime,
+  );
 
-    try {
-      formLeagueUserSize = parseInt(formLeagueUserSize);
-      formMaxTeamSize = parseInt(formMaxTeamSize);
-      formAuctionStartingMoney = parseInt(formAuctionStartingMoney);
-      formTimeBetweenNomination = parseInt(formTimeBetweenNomination);
-      formBidTime = parseInt(formBidTime);
-    } catch (e) {
-      throw new Meteor.Error('NaN', 'Not a Number');
-    }
+  done();
+  return;
+};
 
-    if (
-      !formLeagueName ||
-      !formLeagueUserSize ||
-      !formMaxTeamSize ||
-      !formAuctionStartingMoney ||
-      !formTimeBetweenNomination ||
-      !formBidTime
-    ) {
-      return;
-    }
+const enhance = compose(
+  withState('name', 'changeName', ''),
+  withState('userSize', 'changeUserSize', 4),
+  withState('teamSize', 'changeTeamSize', 18),
+  withState('startingMoney', 'changeStartingMoney', 100),
+  withState('nominationTime', 'changeNominationTime', 15),
+  withState('bidTime', 'changeBidTime', 10),
+  withHandlers({
+    onSubmit,
+    onChangeName: ({ changeName }) => e => changeName(e.target.value),
+    onChangeUserSize: ({ changeUserSize }) => e =>
+      changeUserSize(parseInt(e.target.value)),
+    onChangeTeamSize: ({ changeTeamSize }) => e =>
+      changeTeamSize(parseInt(e.target.value)),
+    onChangeStartingMoney: ({ changeStartingMoney }) => e =>
+      changeStartingMoney(parseInt(e.target.value)),
+    onChangeNominationTime: ({ changeNominationTime }) => e =>
+      changeNominationTime(parseInt(e.target.value)),
+    onChangeBidTime: ({ changeBidTime }) => e =>
+      changeBidTime(parseInt(e.target.value)),
+  }),
+);
 
-    // Save to Server
-    Meteor.call(
-      'CreateLeague',
-      formLeagueName,
-      formLeagueUserSize,
-      formMaxTeamSize,
-      formAuctionStartingMoney,
-      formTimeBetweenNomination,
-      formBidTime,
-    );
-
-    // RESET FORM
-    // React.findDOMNode(this.refs.leagueName).value = '';
-    // React.findDOMNode(this.refs.leagueUserSize).value = 4;
-
-    if (this.props.doneCallback) {
-      this.props.doneCallback();
-    }
-    return;
-  }
-
-  render() {
-    return (
-      <form className="leagueCreationForm" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="leagueName">League name</label>
-          <input
-            type="text"
-            id="leagueName"
-            ref={node => (this.leagueName = node)}
-            className="form-control"
-            placeholder="e.g., Romeo Rumble"
-            maxLength="30"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="leagueUserSize">Max League Size</label>
-          <input
-            type="number"
-            min="2"
-            max="128"
-            step="1"
-            defaultValue="4"
-            className="form-control"
-            id="leagueUserSize"
-            ref={node => (this.leagueUserSize = node)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="maxTeamSize">Max Team Size</label>
-          <input
-            type="number"
-            min="1"
-            max="100"
-            step="1"
-            defaultValue="18"
-            className="form-control"
-            id="maxTeamSize"
-            ref={node => (this.maxTeamSize = node)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="auctionStartingMoney">Starting Auction Money</label>
-          <input
-            type="number"
-            min="1"
-            step="1"
-            defaultValue="100"
-            className="form-control"
-            id="auctionStartingMoney"
-            ref={node => (this.auctionStartingMoney = node)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="timeBetweenNomination">Time Between Nomination</label>
-          <input
-            type="number"
-            min="5"
-            step="1"
-            defaultValue="15"
-            className="form-control"
-            id="timeBetweenNomination"
-            ref={node => (this.timeBetweenNomination = node)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="bidTime">Bid Time</label>
-          <input
-            type="number"
-            min="5"
-            step="1"
-            defaultValue="10"
-            className="form-control"
-            id="bidTime"
-            ref={node => (this.bidTime = node)}
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary">Submit</button>
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={this.props.doneCallback}
-        >
-          Close
-        </button>
-      </form>
-    );
-  }
-}
-
-export default LeagueCreationForm;
+export default enhance(Form);

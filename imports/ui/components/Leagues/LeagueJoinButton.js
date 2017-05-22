@@ -1,15 +1,18 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-const LeagueJoinButton = props => {
-  if (props.isAlreadyInLeague) {
+const LeagueJoinButton = ({
+  isAlreadyInLeague,
+  isFull,
+  isLoggedIn,
+  handleClick,
+}) => {
+  if (isAlreadyInLeague) {
     return <Button bsStyle="success" disabled>Joined!</Button>;
-  } else if (props.isFull) {
+  } else if (isFull) {
     return <Button bsStyle="warning" disabled>Already Full</Button>;
-  } else if (props.isLoggedIn) {
-    return (
-      <Button bsStyle="primary" onClick={props.handleClick}>Join League</Button>
-    );
+  } else if (isLoggedIn) {
+    return <Button bsStyle="primary" onClick={handleClick}>Join League</Button>;
   } else {
     return <Button bsStyle="primary" disabled>Log In First</Button>;
   }

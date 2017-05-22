@@ -2,139 +2,116 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
+import { compose, withState, withHandlers } from 'recompose';
 import { createContainer } from 'meteor/react-meteor-data';
 
-class LoginButtons extends Component {
-  constructor(props) {
-    super(props);
+const LoginButtons = ({
+  user,
+  username,
+  onChangeUsername,
+  password,
+  onChangePassword,
+  onLogout,
+  onLogin,
+  onCreateUser,
+}) =>
+  user
+    ? <div>
+        <span
+          style={{
+            color: '#000000',
+            fontSize: '12px',
+          }}
+        >
+          Hello {user.username}
+        </span>
+        <Button bsSize="xs" bsStyle="primary" onClick={onLogout}>
+          Logout
+        </Button>
+      </div>
+    : <div>
+        <input
+          placeholder="username"
+          value={username}
+          onChange={onChangeUsername}
+          type="text"
+          style={{
+            color: '#000000',
+            maxWidth: '80px',
+          }}
+        />
+        <input
+          placeholder="password"
+          value={password}
+          onChange={onChangePassword}
+          type="password"
+          style={{
+            color: '#000000',
+            maxWidth: '80px',
+          }}
+        />
+        <Button bsSize="xs" bsStyle="primary" onClick={onLogin}>
+          Login
+        </Button>
+        <Button bsSize="xs" bsStyle="primary" onClick={onCreateUser}>
+          Sign Up
+        </Button>
+      </div>;
 
-    this.state = {
-      username: '',
-      password: '',
-    };
-
-    this.resetInputs = this.resetInputs.bind(this);
-    this.changeUsername = this.changeUsername.bind(this);
-    this.changePassword = this.changePassword.bind(this);
-    this.onLogin = this.onLogin.bind(this);
-    this.onCreateUser = this.onCreateUser.bind(this);
-    this.onLogout = this.onLogout.bind(this);
-  }
-
-  resetInputs() {
-    this.setState({
-      username: '',
-      password: '',
-    });
-  }
-
-  changeUsername(event) {
-    this.setState({
-      ...this.state,
-      username: event.target.value,
-    });
-  }
-
-  changePassword(event) {
-    this.setState({
-      ...this.state,
-      password: event.target.value,
-    });
-  }
-
-  onLogin() {
-    Meteor.loginWithPassword(this.state.username, this.state.password, err => {
-      if (err) {
-        console.log('ERROR logging in!');
-        console.error(err);
-      } else {
-        this.resetInputs();
-      }
-    });
-  }
-
-  onCreateUser() {
-    Accounts.createUser(
-      {
-        username: this.state.username,
-        password: this.state.password,
-        profile: {
-          team: {
-            name: 'teamName',
-            players: [],
-          },
-          draftMoney: 100,
-        },
-      },
-      err => {
+const enhanced = compose(
+  withState('username', 'changeUsername', ''),
+  withState('password', 'changePassword', ''),
+  withHandlers({
+    onChangeUsername: ({ changeUsername }) => e =>
+      changeUsername(e.target.value),
+    onChangePassword: ({ changePassword }) => e =>
+      changePassword(e.target.value),
+    onLogout: () => () =>
+      Meteor.logout(err => {
+        if (err) console.log('ERROR logging out!', err);
+      }),
+    onLogin: ({ username, password, changeUsername, changePassword }) => () =>
+      Meteor.loginWithPassword(username, password, err => {
         if (err) {
-          console.log('ERROR creating user!');
-          console.error(err);
+          console.log('ERROR logging in!', err);
         } else {
-          this.resetInputs();
+          changeUsername('');
+          changePassword('');
         }
-      },
-    );
-  }
-
-  onLogout() {
-    Meteor.logout(err => {
-      if (err) {
-        console.log('ERROR logging out!');
-        console.error(err);
-      }
-    });
-  }
-
-  render() {
-    return this.props.user
-      ? <div>
-          <span
-            style={{
-              color: '#000000',
-              fontSize: '12px',
-            }}
-          >
-            Hello {this.props.user.username}
-          </span>
-          <Button bsSize="xs" bsStyle="primary" onClick={this.onLogout}>
-            Logout
-          </Button>
-        </div>
-      : <div>
-          <input
-            placeholder="username"
-            value={this.state.username}
-            onChange={this.changeUsername}
-            type="text"
-            style={{
-              color: '#000000',
-              maxWidth: '80px',
-            }}
-          />
-          <input
-            placeholder="password"
-            value={this.state.password}
-            onChange={this.changePassword}
-            type="password"
-            style={{
-              color: '#000000',
-              maxWidth: '80px',
-            }}
-          />
-          <Button bsSize="xs" bsStyle="primary" onClick={this.onLogin}>
-            Login
-          </Button>
-          <Button bsSize="xs" bsStyle="primary" onClick={this.onCreateUser}>
-            Sign Up
-          </Button>
-        </div>;
-  }
-}
+      }),
+    onCreateUser: ({
+      username,
+      password,
+      changeUsername,
+      changePassword,
+    }) => () =>
+      Accounts.createUser(
+        {
+          username,
+          password,
+          profile: {
+            team: {
+              name: 'teamName',
+              players: [],
+            },
+            draftMoney: 100,
+          },
+        },
+        err => {
+          if (err) {
+            console.log('ERROR creating user!', err);
+          } else {
+            changeUsername('');
+            changePassword('');
+          }
+        },
+      ),
+  }),
+)(LoginButtons);
 
 export default createContainer(
   () => ({
     user: Meteor.user(),
   }),
-  LoginButtons,
+  enhanced,
 );

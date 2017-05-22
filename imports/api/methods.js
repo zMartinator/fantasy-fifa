@@ -111,7 +111,6 @@ Meteor.methods({
     check(leagueId, String);
     const currentLeague = League.findOne(leagueId);
 
-    // This might not appear in the UI immediately, may need to refresh?
     currentLeague.usersInLeague.forEach(userId => {
       const user = User.findOne(userId);
       user.profile.draftMoney = currentLeague.auctionStartingMoney;

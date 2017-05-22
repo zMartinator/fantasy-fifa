@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Button } from 'react-bootstrap';
 import Modal from 'react-modal';
+import { compose, withState, withHandlers } from 'recompose';
 import LeagueCreationForm from './LeagueCreationForm';
 
 const modalStyles = {
@@ -16,54 +17,36 @@ const modalStyles = {
   // },
 };
 
-class LeagueCreationButton extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showModal: false,
-    };
+const LeagueCreationButton = ({ user, show, toggleShow }) =>
+  user
+    ? <div>
+        <Button bsStyle="primary" bsSize="large" onClick={toggleShow}>
+          Create League
+        </Button>
 
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-  }
+        <Modal
+          isOpen={show}
+          contentLabel="Leage Creation Modal"
+          style={modalStyles}
+        >
+          <h1>Create League</h1>
+          <LeagueCreationForm done={toggleShow} />
+        </Modal>
+      </div>
+    : <Button bsStyle="default" bsSize="large" disabled>
+        Login to Create
+      </Button>;
 
-  handleOpenModal() {
-    this.setState({ showModal: true });
-  }
-
-  handleCloseModal() {
-    this.setState({ showModal: false });
-  }
-
-  render() {
-    return this.props.user
-      ? <div>
-          <Button
-            bsStyle="primary"
-            bsSize="large"
-            onClick={this.handleOpenModal}
-          >
-            Create League
-          </Button>
-
-          <Modal
-            isOpen={this.state.showModal}
-            contentLabel="Leage Creation Modal"
-            style={modalStyles}
-          >
-            <h1>Create League</h1>
-            <LeagueCreationForm doneCallback={this.handleCloseModal} />
-          </Modal>
-        </div>
-      : <Button bsStyle="default" bsSize="large" disabled>
-          Login to Create
-        </Button>;
-  }
-}
+const enhanced = compose(
+  withState('show', 'changeShow', false),
+  withHandlers({
+    toggleShow: ({ show, changeShow }) => e => changeShow(!show),
+  }),
+)(LeagueCreationButton);
 
 export default createContainer(
   () => ({
     user: Meteor.user(),
   }),
-  LeagueCreationButton,
+  enhanced,
 );
