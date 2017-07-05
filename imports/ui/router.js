@@ -36,6 +36,6 @@ Meteor.startup(() => {
         </Router>
       </ApolloProvider>
     </div>,
-    document.getElementById('app'),
+    document.getElementById('app')
   );
 });

@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { compose, withHandlers } from 'recompose';
 import LeagueJoinButton from './LeagueJoinButton';
 
-const LeagueItem = ({ league, user, joinLeague }) => (
+const LeagueItem = ({ league, user, joinLeague }) =>
   <div
     style={{
       display: 'flex',
@@ -33,9 +33,7 @@ const LeagueItem = ({ league, user, joinLeague }) => (
       <p style={{ margin: '0' }}>
         {league.usersInLeague.length}
         /
-        {league.maxLeagueSize}
-        {' '}
-        Spots
+        {league.maxLeagueSize} Spots
       </p>
     </div>
     <div
@@ -51,14 +49,13 @@ const LeagueItem = ({ league, user, joinLeague }) => (
         isFull={league.usersInLeague.length === league.maxLeagueSize}
       />
     </div>
-  </div>
-);
+  </div>;
 
 const enhanced = compose(
   withHandlers({
     joinLeague: ({ league, user }) => e =>
       Meteor.call('registerUserForLeague', league._id, user._id),
-  }),
+  })
 )(LeagueItem);
 
 export default createContainer(
@@ -66,5 +63,5 @@ export default createContainer(
     user: Meteor.user(),
     ...rest,
   }),
-  enhanced,
+  enhanced
 );

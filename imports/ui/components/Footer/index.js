@@ -1,13 +1,12 @@
 import React from 'react';
 
-const Footer = () => (
+const Footer = () =>
   <div
     style={{
       paddingLeft: '15px',
     }}
   >
     © Ben Diuguid 2017
-  </div>
-);
+  </div>;
 
 export default Footer;

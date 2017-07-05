@@ -107,14 +107,14 @@ const enhanced = compose(
             changeUsername('');
             changePassword('');
           }
-        },
+        }
       ),
-  }),
+  })
 )(LoginButtons);
 
 export default createContainer(
   () => ({
     user: Meteor.user(),
   }),
-  enhanced,
+  enhanced
 );

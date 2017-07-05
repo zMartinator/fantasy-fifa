@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Shell = props => (
+const Shell = props =>
   <div>
     <Header />
 
@@ -16,7 +16,6 @@ const Shell = props => (
     </main>
 
     <Footer />
-  </div>
-);
+  </div>;
 
 export default Shell;

@@ -39,5 +39,5 @@ DDPRateLimiter.addRule(
     },
   },
   2,
-  5000,
+  5000
 );

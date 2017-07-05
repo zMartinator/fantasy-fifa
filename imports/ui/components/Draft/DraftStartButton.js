@@ -15,7 +15,7 @@ const DraftStartButton = ({ user, league, startDraft }) =>
 const enhanced = compose(
   withHandlers({
     startDraft: ({ league }) => e => Meteor.call('startDraft', league._id),
-  }),
+  })
 )(DraftStartButton);
 
 export default createContainer(
@@ -23,5 +23,5 @@ export default createContainer(
     user: Meteor.user(),
     league: League.findOne(),
   }),
-  enhanced,
+  enhanced
 );

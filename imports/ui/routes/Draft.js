@@ -9,7 +9,7 @@ import DraftPlayerPicker from '../components/Draft/DraftPlayerPicker';
 import spinnerWhileLoading from '../components/Spinner';
 import { compose, withHandlers } from 'recompose';
 
-const Draft = ({ league, user, leagueUsers, handleBid }) => (
+const Draft = ({ league, user, leagueUsers, handleBid }) =>
   <div>
     <div
       style={{
@@ -28,12 +28,11 @@ const Draft = ({ league, user, leagueUsers, handleBid }) => (
     <DraftCurrentBid handleBid={handleBid} />
     <DraftPlayerPicker />
     <div>
-      {leagueUsers.map(user => (
+      {leagueUsers.map(user =>
         <DraftBoardUserItem key={user._id} user={user} />
-      ))}
+      )}
     </div>
-  </div>
-);
+  </div>;
 
 const enhanced = compose(
   withHandlers({
@@ -41,10 +40,10 @@ const enhanced = compose(
       Meteor.call(
         'bidOnPlayer',
         league._id,
-        league.currentBids[league.currentBids.length - 1].value + 1,
+        league.currentBids[league.currentBids.length - 1].value + 1
       ),
   }),
-  spinnerWhileLoading(({ isLoading }) => isLoading),
+  spinnerWhileLoading(({ isLoading }) => isLoading)
 )(Draft);
 
 export default createContainer(({ match }) => {

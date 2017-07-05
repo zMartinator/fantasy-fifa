@@ -32,55 +32,55 @@ Meteor.methods({
     formMaxTeamSize,
     formAuctionStartingMoney,
     formTimeBetweenNomination,
-    formBidTime,
+    formBidTime
   ) {
     check(
       formLeagueName,
       Match.Where(name => {
         check(name, String);
         return name.length > 0 && name.length < 31;
-      }),
+      })
     );
     check(
       formLeagueUserSize,
       Match.Where(leagueSize => {
         check(leagueSize, Number);
         return leagueSize >= 2 && leagueSize < 128;
-      }),
+      })
     );
     check(
       formMaxTeamSize,
       Match.Where(maxTeamSize => {
         check(maxTeamSize, Number);
         return maxTeamSize > 0 && maxTeamSize < 100;
-      }),
+      })
     );
     check(
       formAuctionStartingMoney,
       Match.Where(startingMoney => {
         check(startingMoney, Number);
         return startingMoney >= formMaxTeamSize;
-      }),
+      })
     );
     check(
       formTimeBetweenNomination,
       Match.Where(time => {
         check(time, Number);
         return time >= 2;
-      }),
+      })
     );
     check(
       formBidTime,
       Match.Where(time => {
         check(time, Number);
         return time >= 2;
-      }),
+      })
     );
 
     if (!Meteor.userId()) {
       throw new Meteor.Error(
         'not-logged-in',
-        'You must be logged in to create a league',
+        'You must be logged in to create a league'
       );
     }
 
@@ -139,7 +139,7 @@ Meteor.methods({
     if (!userId) {
       throw new Meteor.Error(
         'not-logged-in',
-        'You must be logged in to nominate a player',
+        'You must be logged in to nominate a player'
       );
     }
 
@@ -248,7 +248,7 @@ Meteor.methods({
         user.save();
 
         currentLeague.playersDrafted.push(
-          currentLeague.currentPlayerUpForBidId,
+          currentLeague.currentPlayerUpForBidId
         );
         currentLeague.didNominateOnTime = false;
         currentLeague.currentBids = [];
@@ -263,7 +263,7 @@ Meteor.methods({
         ) {
           const userToRemove = _.findIndex(
             currentLeague.userTurnOrder,
-            id => id === highestBid.userId,
+            id => id === highestBid.userId
           );
 
           currentLeague.userTurnOrder = [
@@ -324,7 +324,7 @@ Meteor.methods({
         sort: {
           score: { $meta: 'textScore' },
         },
-      },
+      }
     ).fetch();
 
     return players;

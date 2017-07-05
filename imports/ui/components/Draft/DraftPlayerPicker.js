@@ -20,8 +20,8 @@ const loadOptions = (input, callback) => {
 
 const Picker = ({ league, user, player, onPlayerChange, onSubmit }) =>
   league.userTurnOrder.length === 0 ||
-    user._id !== league.userTurnOrder[league.currentUserTurnIndex] ||
-    league.currentPlayerUpForBidId !== ''
+  user._id !== league.userTurnOrder[league.currentUserTurnIndex] ||
+  league.currentPlayerUpForBidId !== ''
     ? null
     : <form onSubmit={onSubmit}>
         <Select.Async
@@ -32,7 +32,9 @@ const Picker = ({ league, user, player, onPlayerChange, onSubmit }) =>
           cache={false}
           loadOptions={loadOptions}
         />
-        <button type="submit" className="btn btn-primary">Nominate!</button>
+        <button type="submit" className="btn btn-primary">
+          Nominate!
+        </button>
       </form>;
 
 const EnhancedPicker = compose(
@@ -51,7 +53,7 @@ const EnhancedPicker = compose(
       // Reset form
       onPlayerChange(undefined);
     },
-  }),
+  })
 )(Picker);
 
 export default createContainer(
@@ -60,5 +62,5 @@ export default createContainer(
     league: League.findOne(),
     ...rest,
   }),
-  EnhancedPicker,
+  EnhancedPicker
 );

@@ -2,14 +2,12 @@ type League {
   _id: ID
   usersInLeague: [User]
   leagueCreator: User
-
   name: String
   maxLeagueSize: Int
   maxTeamSize: Int
   auctionStartingMoney: Int
   startTimeBetweenNomination: Int
   startBidTime: Int
-
   isDraftDone: Boolean
   hasDraftStarted: Boolean
   userTurnOrder: [User]
@@ -19,7 +17,6 @@ type League {
   currentPlayerUpForBidId: Player
   currentBids: [Bid]
   didNominateOnTime: Boolean
-
   playersDrafted: [Player]
 }
 
@@ -50,7 +47,7 @@ type Player {
   headshotImgUrl: String
   lastName: String
   position: String
-  playStyle: String,
+  playStyle: String
   height: Int
   weight: Int
   birthdate: String

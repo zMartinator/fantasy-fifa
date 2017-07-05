@@ -8,7 +8,9 @@ import maxBid from '../../../utils/maxBid';
 const DraftCurrentBidButton = ({ user, league, bid, handleBid }) => {
   if (!user) {
     return (
-      <Button bsStyle="warning" block disabled>You Must Log In First</Button>
+      <Button bsStyle="warning" block disabled>
+        You Must Log In First
+      </Button>
     );
   }
 
@@ -21,21 +23,35 @@ const DraftCurrentBidButton = ({ user, league, bid, handleBid }) => {
   }
 
   if (league.isDraftDone === true) {
-    return <Button bsStyle="success" block disabled>Draft Over</Button>;
+    return (
+      <Button bsStyle="success" block disabled>
+        Draft Over
+      </Button>
+    );
   }
 
   if (bid.userId === user._id) {
     return (
-      <Button bsStyle="success" block disabled>You are highest bidder</Button>
+      <Button bsStyle="success" block disabled>
+        You are highest bidder
+      </Button>
     );
   }
 
   if (user.profile.team.players.length === league.maxTeamSize) {
-    return <Button bsStyle="success" block disabled>Your Team is Full</Button>;
+    return (
+      <Button bsStyle="success" block disabled>
+        Your Team is Full
+      </Button>
+    );
   }
 
   if (bid.value >= maxBid(user, league)) {
-    return <Button bsStyle="warning" block disabled>Above your max bid</Button>;
+    return (
+      <Button bsStyle="warning" block disabled>
+        Above your max bid
+      </Button>
+    );
   }
 
   if (league.currentPlayerUpForBidId !== '') {
@@ -55,5 +71,5 @@ export default createContainer(
     league: League.findOne(),
     ...rest,
   }),
-  DraftCurrentBidButton,
+  DraftCurrentBidButton
 );

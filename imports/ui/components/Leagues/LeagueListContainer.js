@@ -13,9 +13,9 @@ export default compose(
       });
     },
   }),
-  spinnerWhileLoading(props => !props.leagues),
-)(({ leagues }) => (
+  spinnerWhileLoading(props => !props.leagues)
+)(({ leagues }) =>
   <div>
     {leagues.map(league => <LeagueItem key={league._id} league={league} />)}
   </div>
-));
+);

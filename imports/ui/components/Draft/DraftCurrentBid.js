@@ -6,13 +6,14 @@ import Player from '../Player/Player';
 import { League } from '../../../api/collections';
 
 const DraftCurrentBid = ({ league, user, handleBid }) => {
-  const currentBid = league.currentBids.length > 0
-    ? league.currentBids[league.currentBids.length - 1]
-    : {
-        value: -1,
-        userId: '',
-        username: '',
-      };
+  const currentBid =
+    league.currentBids.length > 0
+      ? league.currentBids[league.currentBids.length - 1]
+      : {
+          value: -1,
+          userId: '',
+          username: '',
+        };
 
   return (
     <div>
@@ -24,13 +25,7 @@ const DraftCurrentBid = ({ league, user, handleBid }) => {
       <Player id={league.currentPlayerUpForBidId} />
       {league.currentBidClock !== 0 &&
         <h4>
-          for
-          {' '}
-          {currentBid.value}
-          {' '}
-          by
-          {' '}
-          {currentBid.username}
+          for {currentBid.value} by {currentBid.username}
         </h4>}
       <DraftCurrentBidButton bid={currentBid} handleBid={handleBid} />
     </div>
@@ -42,5 +37,5 @@ export default createContainer(
     user: Meteor.user(),
     league: League.findOne(),
   }),
-  DraftCurrentBid,
+  DraftCurrentBid
 );

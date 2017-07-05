@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LoginButtons from './LoginButtons';
 
-const Header = () => (
+const Header = () =>
   <div
     style={{
       backgroundColor: '#3f51b5',
@@ -34,11 +34,14 @@ const Header = () => (
         fontSize: '16px',
       }}
     >
-      <Link to="/" style={{ padding: '5px' }}>Home</Link>
-      <Link to="/about" style={{ padding: '5px' }}>About</Link>
+      <Link to="/" style={{ padding: '5px' }}>
+        Home
+      </Link>
+      <Link to="/about" style={{ padding: '5px' }}>
+        About
+      </Link>
       <LoginButtons />
     </div>
-  </div>
-);
+  </div>;
 
 export default Header;

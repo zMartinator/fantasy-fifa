@@ -41,12 +41,12 @@ const enhanced = compose(
   withState('show', 'changeShow', false),
   withHandlers({
     toggleShow: ({ show, changeShow }) => e => changeShow(!show),
-  }),
+  })
 )(LeagueCreationButton);
 
 export default createContainer(
   () => ({
     user: Meteor.user(),
   }),
-  enhanced,
+  enhanced
 );

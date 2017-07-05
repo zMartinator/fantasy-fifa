@@ -31,9 +31,7 @@ const Skill = styled.span`
   }
 `;
 
-const SkillWrapper = styled.p`
-  margin: 0;
-`;
+const SkillWrapper = styled.p`margin: 0;`;
 
 const SkillTitle = styled.p`
   font-size: 16px;
@@ -51,7 +49,9 @@ const SkillBox = styled.div`
 const Player = ({ player }) =>
   player
     ? <Container>
-        <h3>{player.name}</h3>
+        <h3>
+          {player.name}
+        </h3>
         <img src={player.headshotImgUrl} />
         <div
           style={{
@@ -188,9 +188,13 @@ const Player = ({ player }) =>
               Traits
             </SkillTitle>
             {player.traits &&
-              player.traits.map(trait => (
-                <div key={trait}><SkillWrapper>{trait}</SkillWrapper></div>
-              ))}
+              player.traits.map(trait =>
+                <div key={trait}>
+                  <SkillWrapper>
+                    {trait}
+                  </SkillWrapper>
+                </div>
+              )}
           </SkillBox>
           <SkillBox>
             <SkillTitle
@@ -201,11 +205,13 @@ const Player = ({ player }) =>
               Specialities
             </SkillTitle>
             {player.specialities &&
-              player.specialities.map(speciality => (
+              player.specialities.map(speciality =>
                 <div key={speciality}>
-                  <SkillWrapper>{speciality}</SkillWrapper>
+                  <SkillWrapper>
+                    {speciality}
+                  </SkillWrapper>
                 </div>
-              ))}
+              )}
           </SkillBox>
         </div>
       </Container>
@@ -215,5 +221,5 @@ export default createContainer(
   ({ id }) => ({
     player: Players.findOne(id),
   }),
-  Player,
+  Player
 );

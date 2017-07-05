@@ -17,7 +17,7 @@ const Form = ({
   onChangeNominationTime,
   bidTime,
   onChangeBidTime,
-}) => (
+}) =>
   <form className="leagueCreationForm" onSubmit={onSubmit}>
     <div>
       <label htmlFor="leagueName">League name</label>
@@ -88,12 +88,13 @@ const Form = ({
       />
     </div>
 
-    <button type="submit" className="btn btn-primary">Submit</button>
+    <button type="submit" className="btn btn-primary">
+      Submit
+    </button>
     <button type="button" className="btn btn-default" onClick={done}>
       Close
     </button>
-  </form>
-);
+  </form>;
 
 const onSubmit = ({
   done,
@@ -113,7 +114,7 @@ const onSubmit = ({
     teamSize,
     startingMoney,
     nominationTime,
-    bidTime,
+    bidTime
   );
 
   done();
@@ -140,7 +141,7 @@ const enhance = compose(
       changeNominationTime(parseInt(e.target.value)),
     onChangeBidTime: ({ changeBidTime }) => e =>
       changeBidTime(parseInt(e.target.value)),
-  }),
+  })
 );
 
 export default enhance(Form);

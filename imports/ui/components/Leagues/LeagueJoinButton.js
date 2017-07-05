@@ -8,13 +8,29 @@ const LeagueJoinButton = ({
   handleClick,
 }) => {
   if (isAlreadyInLeague) {
-    return <Button bsStyle="success" disabled>Joined!</Button>;
+    return (
+      <Button bsStyle="success" disabled>
+        Joined!
+      </Button>
+    );
   } else if (isFull) {
-    return <Button bsStyle="warning" disabled>Already Full</Button>;
+    return (
+      <Button bsStyle="warning" disabled>
+        Already Full
+      </Button>
+    );
   } else if (isLoggedIn) {
-    return <Button bsStyle="primary" onClick={handleClick}>Join League</Button>;
+    return (
+      <Button bsStyle="primary" onClick={handleClick}>
+        Join League
+      </Button>
+    );
   } else {
-    return <Button bsStyle="primary" disabled>Log In First</Button>;
+    return (
+      <Button bsStyle="primary" disabled>
+        Log In First
+      </Button>
+    );
   }
 };
 
