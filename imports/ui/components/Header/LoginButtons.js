@@ -4,6 +4,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 import { compose, withState, withHandlers } from 'recompose';
 import { createContainer } from 'meteor/react-meteor-data';
+import { withApollo } from 'react-apollo';
 
 const LoginButtons = ({
   user,
@@ -59,6 +60,7 @@ const LoginButtons = ({
       </div>;
 
 const enhanced = compose(
+  withApollo,
   withState('username', 'changeUsername', ''),
   withState('password', 'changePassword', ''),
   withHandlers({
@@ -66,9 +68,10 @@ const enhanced = compose(
       changeUsername(e.target.value),
     onChangePassword: ({ changePassword }) => e =>
       changePassword(e.target.value),
-    onLogout: () => () =>
+    onLogout: ({ client }) => () =>
       Meteor.logout(err => {
         if (err) console.log('ERROR logging out!', err);
+        return client.resetStore();
       }),
     onLogin: ({ username, password, changeUsername, changePassword }) => () =>
       Meteor.loginWithPassword(username, password, err => {
