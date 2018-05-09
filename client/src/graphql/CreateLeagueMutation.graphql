@@ -1,0 +1,24 @@
+mutation LoginMutation(
+  $name: String!
+  $maxSize: Int!
+  $teamSize: Int!
+  $startingMoney: Int!
+  $nominationTime: Int!
+  $bidTime: Int!
+) {
+  createLeague(
+    name: $name
+    maxSize: $maxSize
+    teamSize: $teamSize
+    startingMoney: $startingMoney
+    nominationTime: $nominationTime
+    bidTime: $bidTime
+  ) {
+    id
+    name
+    maxSize
+    members {
+      id
+    }
+  }
+}

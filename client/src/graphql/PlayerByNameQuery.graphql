@@ -1,0 +1,10 @@
+query PlayerByNameQuery($query: String!) {
+  playersByName(query: $query) {
+    id
+    firstName
+    lastName
+    name
+    rating
+    position
+  }
+}

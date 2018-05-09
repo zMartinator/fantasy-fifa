@@ -1,0 +1,195 @@
+type User {
+  id: ID! @unique
+  name: String! @unique
+  createdLeagues: [League!]! @relation(name: "LeagueCreator")
+  joinedLeagues: [League!]! @relation(name: "MemberOfLeague")
+  teams: [Team!]! @relation(name: "TeamOwner")
+  password: String!
+}
+
+enum DraftStatus {
+  IDLE
+  IN_PROGRESS
+  PAUSED
+  ENDED
+}
+
+type Team {
+  id: ID! @unique
+  money: Int!
+  owner: User! @relation(name: "TeamOwner")
+  players: [Player!]!
+  paidAmounts: [Int!]!
+}
+
+type Bid {
+  user: User
+  value: Int
+}
+
+type League {
+  id: ID! @unique
+  creator: User! @relation(name: "LeagueCreator")
+  members: [User!]! @relation(name: "MemberOfLeague")
+  teams: [Team!]!
+
+  name: String!
+  maxSize: Int!
+  teamSize: Int!
+  startingMoney: Int!
+  nominationTime: Int!
+  bidTime: Int!
+
+  status: DraftStatus! @default(value: "IDLE")
+  userTurnIndex: Int! @default(value: "0")
+  bidClock: Int! @default(value: "0")
+  nominationClock: Int! @default(value: "0")
+
+  userTurnOrder: [Int!]!
+  playersDrafted: [Player!]!
+
+  playerUpForBid: ID
+  highestBid: Bid
+}
+
+type PlayerLeague {
+  id: ID! @unique
+  fifaId: Int!
+  abbrName: String!
+  imgUrl: String
+  name: String!
+}
+
+type PlayerNation {
+  id: ID! @unique
+  fifaId: Int!
+  largeImgUrl: String!
+  abbrName: String!
+  name: String!
+}
+
+type PlayerClub {
+  id: ID! @unique
+  fifaId: Int!
+  abbrName: String!
+  darkLargeImgUrl: String!
+  normalLargeImgUrl: String!
+  name: String!
+}
+
+enum FutAttribute {
+  PAC
+  SHO
+  PAS
+  DRI
+  DEF
+  PHY
+  DIV # GK Attribute
+  HAN # GK Attribute
+  KIC # GK Attribute
+  REF # GK Attribute
+  SPD # GK Attribute
+  POS # GK Attribute
+}
+
+type PlayerAttribute {
+  name: FutAttribute!
+  value: Int!
+}
+
+enum PlayerWorkRate {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum PlayerPosition {
+  LF
+  CF
+  RF
+  ST
+  LW
+  LM
+  CDM
+  CAM
+  CM
+  RM
+  RW
+  LWB
+  LB
+  CB
+  RB
+  RWB
+  GK
+}
+
+enum PlayerFoot {
+  RIGHT
+  LEFT
+}
+
+type Player {
+  id: ID! @unique
+  fifaBaseId: Int!
+  fifaId: Int!
+  commonName: String!
+  firstName: String!
+  headshotImgUrl: String!
+  lastName: String!
+  league: PlayerLeague!
+  nation: PlayerNation!
+  club: PlayerClub!
+  position: PlayerPosition!
+  composure: Int!
+  height: Int!
+  weight: Int!
+  birthdate: String!
+  age: Int!
+  acceleration: Int!
+  aggression: Int!
+  agility: Int!
+  balance: Int!
+  ballcontrol: Int!
+  foot: PlayerFoot!
+  skillMoves: Int!
+  crossing: Int!
+  curve: Int!
+  dribbling: Int!
+  finishing: Int!
+  freekickaccuracy: Int!
+  gkdiving: Int!
+  gkhandling: Int!
+  gkkicking: Int!
+  gkpositioning: Int!
+  gkreflexes: Int!
+  headingaccuracy: Int!
+  interceptions: Int!
+  jumping: Int!
+  longpassing: Int!
+  longshots: Int!
+  marking: Int!
+  penalties: Int!
+  positioning: Int!
+  potential: Int!
+  reactions: Int!
+  shortpassing: Int!
+  shotpower: Int!
+  slidingtackle: Int!
+  sprintspeed: Int!
+  standingtackle: Int!
+  stamina: Int!
+  strength: Int!
+  vision: Int!
+  volleys: Int!
+  weakFoot: Int!
+  traits: [String!]!
+  specialities: [String!]!
+  atkWorkRate: PlayerWorkRate!
+  defWorkRate: PlayerWorkRate!
+  attributes: [PlayerAttribute!]!
+  name: String!
+  quality: String!
+  color: String!
+  isGK: Boolean!
+  rating: Int!
+}

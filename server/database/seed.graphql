@@ -1,0 +1,40 @@
+mutation {
+  ben: createUser(
+    data: {
+      name: "Ben"
+      password: "$2a$10$UEKFmLLRn.Bq.w7TJZTUB.f8jsDYHoRNmjep4/Oj6c3Gsepd4Ydni"
+    }
+  ) {
+    id
+  }
+
+  zach: createUser(
+    data: {
+      name: "Zach"
+      password: "$2a$10$76g36TtNNlKbAMLsg1RoHe4mSKnC8KJyj6NWC9CtWuIATEOcS6Y.m"
+    }
+  ) {
+    id
+  }
+
+  fullLeague: createLeague(
+    data: {
+      name: "Seeded League"
+      maxSize: 2
+      teamSize: 3
+      startingMoney: 100
+      nominationTime: 20
+      bidTime: 10
+      creator: { connect: { name: "Ben" } }
+      members: { connect: [{ name: "Ben" }, { name: "Zach" }] }
+      teams: {
+        create: [
+          { money: 100, owner: { connect: { name: "Ben" } } }
+          { money: 100, owner: { connect: { name: "Zach" } } }
+        ]
+      }
+    }
+  ) {
+    id
+  }
+}

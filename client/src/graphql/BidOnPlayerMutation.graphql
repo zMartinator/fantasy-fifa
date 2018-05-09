@@ -1,0 +1,5 @@
+mutation bidOnPlayer($leagueId: ID!, $amount: Int!) {
+  bidOnPlayer(leagueId: $leagueId, amount: $amount) {
+    id
+  }
+}

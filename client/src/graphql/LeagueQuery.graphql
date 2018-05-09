@@ -1,0 +1,44 @@
+query League($id: ID!) {
+  league(id: $id) {
+    id
+    name
+    maxSize
+    teamSize
+    status
+    bidClock
+    nominationClock
+    playerUpForBid
+    userTurnOrder
+    userTurnIndex
+    playersDrafted {
+      id
+      name
+    }
+    highestBid {
+      value
+      user {
+        id
+        name
+      }
+    }
+    creator {
+      id
+    }
+    members {
+      id
+      name
+    }
+    teams {
+      money
+      owner {
+        id
+        name
+      }
+      players {
+        id
+        name
+      }
+      paidAmounts
+    }
+  }
+}

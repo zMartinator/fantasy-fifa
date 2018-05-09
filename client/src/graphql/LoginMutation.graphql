@@ -1,0 +1,9 @@
+mutation LoginMutation($name: String!, $password: String!) {
+  login(name: $name, password: $password) {
+    token
+    user {
+      id
+      name
+    }
+  }
+}

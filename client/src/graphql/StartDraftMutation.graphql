@@ -1,0 +1,13 @@
+mutation StartDraftMutation($leagueId: ID!) {
+  startDraft(leagueId: $leagueId) {
+    id
+    status
+    userTurnOrder
+    userTurnIndex
+    playerUpForBid
+    members {
+      id
+      name
+    }
+  }
+}

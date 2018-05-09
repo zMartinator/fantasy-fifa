@@ -1,0 +1,44 @@
+# import League, LeagueSubscriptionPayload, Player, from "./generated/prisma.graphql"
+
+type Query {
+  leagues: [League!]!
+  league(id: ID!): League
+  user: User
+  playersByName(query: String!): [Player!]!
+  player(id: ID!): Player
+}
+
+type Mutation {
+  signup(name: String!, password: String!): AuthPayload
+  login(name: String!, password: String!): AuthPayload
+  joinLeague(id: ID!): League
+  createLeague(
+    name: String!
+    maxSize: Int!
+    teamSize: Int!
+    startingMoney: Int!
+    nominationTime: Int!
+    bidTime: Int!
+  ): League
+  startDraft(leagueId: ID!): League
+  pauseDraft(leagueId: ID!): League
+  resumeDraft(leagueId: ID!): League
+  nominatePlayer(leagueId: ID!, playerId: ID!): Player
+  bidOnPlayer(leagueId: ID!, amount: Int!): Player
+}
+
+type Subscription {
+  leagueUpdated(id: ID!): LeagueSubscriptionPayload
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  createdLeagues: [League!]!
+  joinedLeagues: [League!]!
+}

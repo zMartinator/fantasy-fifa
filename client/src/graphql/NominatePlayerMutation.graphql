@@ -1,0 +1,5 @@
+mutation NominatePlayerMutation($leagueId: ID!, $playerId: ID!) {
+  nominatePlayer(leagueId: $leagueId, playerId: $playerId) {
+    id
+  }
+}
